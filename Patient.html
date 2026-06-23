@@ -1,0 +1,3954 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المرضى الراقدين</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #eef2f7;
+            padding: 15px;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #0d47a1;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 2px;
+            /* حواف حادة */
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+
+        .btn-g {
+            background: #198754;
+            color: #fff;
+        }
+
+        .btn-b {
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .btn-r {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .btn-y {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-i {
+            background: #0dcaf0;
+            color: #333;
+        }
+
+        .btn-s {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-d {
+            background: #212529;
+            color: #fff;
+        }
+
+        .btn-o1 {
+            background: transparent;
+            border: 2px solid #212529;
+            color: #212529;
+        }
+
+        .btn-o2 {
+            background: transparent;
+            border: 2px solid #198754;
+            color: #198754;
+        }
+
+        .btn-o3 {
+            background: transparent;
+            border: 2px solid #0d6efd;
+            color: #0d6efd;
+        }
+
+        .btn-o4 {
+            background: transparent;
+            border: 2px solid #0dcaf0;
+            color: #0dcaf0;
+        }
+
+        .btn-o5 {
+            background: transparent;
+            border: 2px solid #6c757d;
+            color: #6c757d;
+        }
+
+        .btn-o6 {
+            background: transparent;
+            border: 2px solid #ffc107;
+            color: #b38600;
+        }
+
+        .btn-o7 {
+            background: transparent;
+            border: 2px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-o8 {
+            background: transparent;
+            border: 2px solid #fd7e14;
+            color: #fd7e14;
+        }
+
+        .btn-o9 {
+            background: transparent;
+            border: 2px solid #6f42c1;
+            color: #6f42c1;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        .stitle {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0d47a1;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: end;
+        }
+
+        .col {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .col label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #333;
+        }
+
+        .col input,
+        .col select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .col input:focus,
+        .col select:focus {
+            border-color: #0d6efd;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+        }
+
+        .col-wide {
+            flex: 2.5;
+            min-width: 200px;
+        }
+
+        .col-medium {
+            flex: 1.5;
+            min-width: 130px;
+        }
+
+        .col-small {
+            flex: 0.6;
+            min-width: 70px;
+        }
+
+        .col-small input,
+        .col-small select {
+            padding: 4px 6px;
+            font-size: 12px;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        /* ===== داشبورد ===== */
+        .stats-dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 100px;
+            background: #ffffff;
+            /* خلفية بيضاء */
+            border-radius: 2px;
+            /* حواف حادة */
+            padding: 12px 15px;
+            text-align: right;
+            border: 1px solid #dee2e6;
+            border-left: 6px solid #0d6efd;
+            /* شريط جانبي أزرق افتراضي */
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card .number {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0d47a1;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #495057;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ألوان الشرائط الجانبية المختلفة */
+        .stat-card.green {
+            border-left-color: #198754;
+        }
+
+        .stat-card.green .number {
+            color: #1b5e20;
+        }
+
+        .stat-card.orange {
+            border-left-color: #fd7e14;
+        }
+
+        .stat-card.orange .number {
+            color: #e65100;
+        }
+
+        .stat-card.red {
+            border-left-color: #dc3545;
+        }
+
+        .stat-card.red .number {
+            color: #c62828;
+        }
+
+        .stat-card.purple {
+            border-left-color: #6f42c1;
+        }
+
+        .stat-card.purple .number {
+            color: #6a1b9a;
+        }
+
+        .stat-card.pink {
+            border-left-color: #d63384;
+        }
+
+        .stat-card.pink .number {
+            color: #880e4f;
+        }
+
+        .stat-card.teal {
+            border-left-color: #20c997;
+        }
+
+        .stat-card.teal .number {
+            color: #00695c;
+        }
+
+        .stat-card.warning {
+            border-left-color: #ffc107;
+        }
+
+        .stat-card.warning .number {
+            color: #856404;
+        }
+
+        /* ===== جدول مع أشرطة تمرير ===== */
+        .tbl {
+            max-height: 420px;
+            overflow: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+
+        .tbl table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tbl th {
+            background: #0d47a1;
+            color: #fff;
+            padding: 8px 5px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .tbl td {
+            padding: 6px 5px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .tbl tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .tbl tr:hover {
+            background: #e3f2fd;
+            cursor: pointer;
+        }
+
+        .hl {
+            background: #ffd700 !important;
+            border: 2px solid #f57f17;
+        }
+
+        .hl td {
+            font-weight: 700;
+        }
+
+        .sep td {
+            padding: 2px 0;
+            border: none;
+        }
+
+        .sep-line {
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #9b59b6);
+            margin: 0 5px;
+            opacity: 0.5;
+        }
+
+        /* ===== أيقونة المرفق ===== */
+        .at {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+            width: 22px;
+            height: 34px;
+        }
+
+        .at .bk {
+            display: block;
+            width: 18px;
+            height: 14px;
+            border-radius: 3px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2px;
+            flex-shrink: 0;
+        }
+
+        .at .bk:last-child {
+            margin-bottom: 0;
+        }
+
+        .at .b1 {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .at .b2 {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .dash {
+            margin-top: 20px;
+            padding: 18px;
+            background: #f8faff;
+            border-radius: 12px;
+            border: 2px solid #0d6efd;
+            display: none;
+        }
+
+        .dash.show {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tab-btn {
+            padding: 6px 18px;
+            border: none;
+            border-radius: 25px;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .tab-btn.active {
+            background: #0d47a1;
+            color: #fff;
+        }
+
+        .rbox {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+        }
+
+        .rbox .row {
+            gap: 6px;
+        }
+
+        .rbox .col {
+            min-width: 150px;
+        }
+
+        .rbox .col label {
+            font-size: 11px;
+            color: #555;
+        }
+
+        .rbox .col span {
+            font-weight: 500;
+        }
+
+        .chart-box {
+            background: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 18px;
+        }
+
+        .chart-box canvas {
+            max-height: 280px;
+            width: 100%;
+        }
+
+        .chart-box .chart-title {
+            text-align: center;
+            font-weight: 600;
+            color: #0d47a1;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .mask.show {
+            display: flex;
+        }
+
+        .mbox {
+            background: #fff;
+            padding: 25px;
+            border-radius: 14px;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .mbox .btn {
+            width: 100%;
+            margin-top: 6px;
+            border-radius: 2px;
+        }
+
+        .prt {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 4px 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .prt:hover {
+            opacity: 0.8;
+        }
+
+        .alert-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .year-chart-container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            margin-top: 10px;
+        }
+
+        .year-chart-container canvas {
+            max-height: 150px;
+            width: 100%;
+        }
+
+        .scanner-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .scanner-modal.show {
+            display: flex;
+        }
+
+        .scanner-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 650px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .scanner-box h2 {
+            color: #0d47a1;
+            border-bottom: 2px solid #e3f2fd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scanner-box .form-group {
+            margin-bottom: 12px;
+        }
+
+        .scanner-box .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .scanner-box .form-group select,
+        .scanner-box .form-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+        }
+
+        .scanner-preview {
+            border: 2px dashed #0d6efd;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8faff;
+            margin: 10px 0;
+        }
+
+        .scanner-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+
+        .scanner-preview .placeholder {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .scanner-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .scanner-actions .btn {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            border-radius: 2px;
+        }
+
+        /* ===== تذييل الصفحة ===== */
+        .app-footer {
+            margin-top: 25px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            color: white;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 -4px 15px rgba(13, 71, 161, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .app-footer .dev-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px 20px;
+        }
+
+        .app-footer .dev-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-footer .logo {
+            font-size: 28px;
+            background: #ffd700;
+            color: #0d47a1;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .app-footer .separator {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        .app-footer .highlight-name {
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .app-footer {
+                font-size: 12px;
+                padding: 12px;
+            }
+
+            .app-footer .dev-info {
+                gap: 6px 10px;
+            }
+
+            .col,
+            .col-wide,
+            .col-medium,
+            .col-small {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app" id="app">
+        <h1>🏥 برنامج المرضى الراقدين </h1>
+
+        <!-- أزرار العمليات -->
+        <div class="btns">
+            <button class="btn btn-g" onclick="newRecord()">➕ إضافة</button>
+            <button class="btn btn-b" onclick="saveRecord()">💾 حفظ</button>
+            <button class="btn btn-i" onclick="openSearch()">🔍 بحث</button>
+            <button class="btn btn-r" onclick="deleteRecord()">🗑️ حذف</button>
+            <button class="btn btn-y" onclick="updateRecord()">✏️ تعديل</button>
+            <button class="btn btn-s" onclick="printReport()">🖨️ طباعة</button>
+            <button class="btn btn-g" onclick="openReport()">📋 تقرير المريض</button>
+            <button class="btn btn-d" onclick="showDashboard('causes')">📊 الأسباب العشرة</button>
+            <button class="btn btn-d" onclick="showDashboard('charts')">📈 مخططات</button>
+            <button class="btn btn-o8" onclick="clearHighlight()">✨ إلغاء التضليل</button>
+            <button class="btn btn-o9" onclick="openScanner()">📷 ماسح</button>
+            <button class="btn btn-o3" onclick="attachFile()">📎 ارفاق</button>
+            <button class="btn btn-o4" onclick="viewAttachment()">👁️ عرض المرفق</button>
+            <button class="btn btn-o5" onclick="backupData()">💾 نسخ احتياطي</button>
+            <button class="btn btn-o6" onclick="restoreData()">↩️ استعادة</button>
+            <button class="btn btn-o7" onclick="exportExcel()">📊 تصدير Excel</button>
+            <button class="btn btn-o7" onclick="exitApp()">🚪 خروج</button>
+        </div>
+
+        <!-- ===== داشبورد الإحصائيات ===== -->
+        <div class="stats-dashboard" id="statsDashboard">
+            <div class="stat-card">
+                <div class="number" id="totalPatients">0</div>
+                <div class="label">👨‍⚕️ إجمالي المرضى</div>
+            </div>
+            <div class="stat-card green">
+                <div class="number" id="totalDiseases">0</div>
+                <div class="label">🩺 عدد الحالات المرضية</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="number" id="activePatients">0</div>
+                <div class="label">🏥 مرضى راقدون</div>
+            </div>
+            <div class="stat-card red">
+                <div class="number" id="deceasedPatients">0</div>
+                <div class="label">⚰️ المتوفون</div>
+            </div>
+            <div class="stat-card purple">
+                <div class="number" id="totalHospitals">0</div>
+                <div class="label">🏛️ عدد المستشفيات</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="maleCount">0</div>
+                <div class="label">👨 الذكور</div>
+            </div>
+            <div class="stat-card pink">
+                <div class="number" id="femaleCount">0</div>
+                <div class="label">👩 الإناث</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="number" id="intersexCount">0</div>
+                <div class="label">⚧ الخنثى</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="number" id="childrenUnder5">0</div>
+                <div class="label">🧒 الأطفال (&lt; 5 سنوات)</div>
+            </div>
+            <div class="stat-card" style="flex:2; min-width:250px; border-left-color: #0d6efd;">
+                <div class="year-chart-container" style="border:none; padding:0; margin:0; background:transparent;">
+                    <canvas id="yearChart" style="max-height:80px;"></canvas>
+                    <div style="text-align:center; font-size:12px; color:#555; margin-top:4px;">📅 عدد المرضى حسب سنة
+                        الدخول</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- نموذج الإدخال -->
+        <div class="section">
+            <div class="stitle">👤 المعلومات الشخصية</div>
+            <div class="row">
+                <!-- تم توسيع حقل رقم السجل إلى col-medium -->
+                <div class="col col-medium"><label>رقم السجل</label><input type="number" id="f_medical_record"></div>
+                <div class="col col-wide"><label>اسم المريض</label><input type="text" id="f_patient_name"></div>
+                <div class="col col-wide"><label>اسم الأم</label><input type="text" id="f_mother_name"></div>
+                <div class="col col-medium"><label>رقم البطاقة</label><input type="text" id="f_national_id"></div>
+                <div class="col col-small"><label>الجنس</label>
+                    <select id="f_gender">
+                        <option value="">--</option>
+                        <option>ذكر</option>
+                        <option>أنثى</option>
+                        <option>خنثى</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>الحالة الاجتماعية</label>
+                    <select id="f_marital_status">
+                        <option value="">--</option>
+                        <option>أعزب</option>
+                        <option>متزوج</option>
+                        <option>مطلق</option>
+                        <option>أرمل</option>
+                    </select>
+                </div>
+                <div class="col col-medium"><label>الجنسية</label>
+                    <select id="f_nationality">
+                        <option value="">--</option>
+                        <option>عراقي</option>
+                        <option>عربي</option>
+                        <option>أسيوي</option>
+                        <option>افريقي</option>
+                        <option>اوربي</option>
+                        <option>امريكي</option>
+                        <option>اسباني</option>
+                        <option>استرالي</option>
+                        <option>كندي</option>
+                        <option>برازيلي</option>
+                        <option>اخرى</option>
+                        <option>غير معروف</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>العمر (يوم)</label><input type="number" id="f_age_days" min="0"
+                        value=""></div>
+                <div class="col col-small"><label>العمر (شهر)</label><input type="number" id="f_age_months" min="0"
+                        value=""></div>
+                <div class="col col-small"><label>العمر (سنة)</label><input type="number" id="f_age_years" min="0"
+                        value=""></div>
+                <div class="col col-small"><label>المهنة</label>
+                    <select id="f_profession">
+                        <option value="">--</option>
+                        <option>طالب</option>
+                        <option>موظف</option>
+                        <option>مهندس</option>
+                        <option>طبيب</option>
+                        <option>محامي</option>
+                        <option>مدرس</option>
+                        <option>عامل</option>
+                        <option>متقاعد</option>
+                        <option>ربة منزل</option>
+                        <option>عاطل عن العمل</option>
+                        <option>أخرى</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>التحصيل</label>
+                    <select id="f_education">
+                        <option value="">--</option>
+                        <option>أمي</option>
+                        <option>ابتدائية</option>
+                        <option>متوسطة</option>
+                        <option>إعدادية</option>
+                        <option>ثانوية</option>
+                        <option>دبلوم</option>
+                        <option>بكالوريوس</option>
+                        <option>ماجستير</option>
+                        <option>دكتوراه</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>رقودات سابقة</label><input type="number" id="f_previous_admissions"
+                        min="0" value=""></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="stitle">🩺 المعلومات الطبية</div>
+            <div class="row">
+                <div class="col col-wide"><label>تاريخ الدخول</label><input type="date" id="f_admission_date"></div>
+                <div class="col col-wide"><label>تاريخ الخروج</label><input type="date" id="f_discharge_date"></div>
+                <div class="col col-small"><label>أمراض مزمنة</label>
+                    <select id="f_chronic_disease">
+                        <option value="لايوجد">لايوجد</option>
+                        <option>سكري</option>
+                        <option>ضغط الدم</option>
+                        <option>قلب</option>
+                        <option>ربو</option>
+                        <option>سرطان</option>
+                        <option>فشل كلوي</option>
+                        <option>أخرى</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>الوزن</label><input type="number" id="f_weight" step="0.1"></div>
+                <div class="col col-small"><label>مدخن</label>
+                    <select id="f_smoker">
+                        <option value="">--</option>
+                        <option>نعم</option>
+                        <option>كلا</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>رمز ICD</label>
+                    <select id="f_diagnosis" onchange="updateDiagnosisArabic()">
+                        <option value="">--</option>
+                    </select>
+                </div>
+                <div class="col col-wide"><label>التشخيص بالعربي</label><input type="text" id="f_diagnosis_arabic"
+                        readonly style="background:#e9ecef;"></div>
+                <div class="col col-medium"><label>المحافظة</label>
+                    <select id="f_province" onchange="updateDistricts()">
+                        <option value="">--</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>القضاء</label>
+                    <select id="f_district">
+                        <option value="">--</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>الحي</label><input type="text" id="f_neighborhood"></div>
+                <div class="col col-medium"><label>المستشفى</label>
+                    <select id="f_hospital">
+                        <option value="">--</option>
+                    </select>
+                </div>
+                <div class="col col-small"><label>اسم الطبيب</label><input type="text" id="f_doctor_name"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="stitle">🚪 حالة الخروج</div>
+            <div class="row">
+                <div class="col col-small"><label>حالة المريض</label>
+                    <select id="f_status">
+                        <option value="">--</option>
+                        <option>راقد</option>
+                        <option>متوفي</option>
+                        <option>خروج بتحسن</option>
+                        <option>خروج ضد الرأي الطبي</option>
+                        <option>تحويل</option>
+                    </select>
+                </div>
+                <!-- تم تقليل حقل الردهة إلى col-small مع خط أصغر -->
+                <div class="col col-small" style="flex:0.4; min-width:60px;"><label
+                        style="font-size:10px;">الردهة</label>
+                    <select id="f_department" style="font-size:11px; padding:4px 6px;">
+                        <option value="">--</option>
+                        <option>الباطنية</option>
+                        <option>الجراحة</option>
+                        <option>العناية المركزة</option>
+                        <option>القلبية</option>
+                        <option>العصبية</option>
+                        <option>الأطفال</option>
+                        <option>النسائية</option>
+                        <option>العظام</option>
+                        <option>الطوارئ</option>
+                        <option>الحروق</option>
+                        <option>العيون</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول السجلات -->
+        <div class="section">
+            <div class="stitle">📋 سجلات المرضى</div>
+            <div class="tbl" id="tableContainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>م</th>
+                            <th>رقم السجل</th>
+                            <th>اسم المريض</th>
+                            <th>اسم الأم</th>
+                            <th>رقم البطاقة</th>
+                            <th>الجنس</th>
+                            <th>تاريخ الدخول</th>
+                            <th>تاريخ الخروج</th>
+                            <th>المستشفى</th>
+                            <th>الطبيب</th>
+                            <th>رمز ICD</th>
+                            <th>التشخيص</th>
+                            <th>الردهة</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="14" style="text-align:center;padding:20px;">جاري التحميل...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dash" id="dashboard">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="causes" onclick="switchTab('causes')">📊 الأسباب
+                    العشرة</button>
+                <button class="tab-btn" data-tab="report" onclick="switchTab('report')">📋 تقرير المريض</button>
+                <button class="tab-btn" data-tab="charts" onclick="switchTab('charts')">📈 مخططات</button>
+            </div>
+            <div id="tabContent"></div>
+        </div>
+
+        <!-- Modal البحث -->
+        <div class="mask" id="searchModal">
+            <div class="mbox">
+                <h3 style="color:#0d47a1;">🔍 البحث عن مريض</h3>
+                <div style="margin:8px 0;"><label>البحث حسب</label>
+                    <select id="searchType"
+                        style="width:100%; padding:6px; border-radius:6px; border:1px solid #ced4da;">
+                        <option value="all">الكل (أي حقل)</option>
+                        <option value="medical_record">رقم السجل</option>
+                        <option value="patient_name">اسم المريض</option>
+                        <option value="mother_name">اسم الأم</option>
+                        <option value="national_id">رقم البطاقة</option>
+                    </select>
+                </div>
+                <div style="margin:8px 0;"><label>قيمة البحث</label><input type="text" id="searchQuery"
+                        placeholder="أدخل قيمة البحث..."
+                        style="width:100%; padding:6px; border-radius:6px; border:1px solid #ced4da;"></div>
+                <button class="btn btn-b" onclick="doSearch()" style="width:100%;">🔍 بحث</button>
+                <button class="btn btn-s" onclick="clearSearch()" style="width:100%; margin-top:4px;">❌ مسح
+                    التحديد</button>
+                <button class="btn btn-s" onclick="closeSearch()" style="width:100%; margin-top:4px;">إغلاق</button>
+            </div>
+        </div>
+
+        <!-- نافذة الماسح -->
+        <div class="scanner-modal" id="scannerModal">
+            <div class="scanner-box">
+                <h2>📷 الماسح الضوئي</h2>
+                <p style="color:#555; font-size:14px; margin-bottom:12px;">اختر نوع الماسح الضوئي ثم ابدأ المسح.</p>
+                <div class="form-group">
+                    <label>نوع الماسح الضوئي</label>
+                    <select id="scannerType">
+                        <option value="twain">TWAIN (الماسحات الاحترافية)</option>
+                        <option value="wia">WIA (Windows Image Acquisition)</option>
+                        <option value="canon">Canon (جميع الطرازات)</option>
+                        <option value="hp">HP (جميع الطرازات)</option>
+                        <option value="epson">Epson (جميع الطرازات)</option>
+                        <option value="brother">Brother (جميع الطرازات)</option>
+                        <option value="samsung">Samsung (جميع الطرازات)</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>صيغة الملف</label>
+                    <select id="scanFormat">
+                        <option value="image/jpeg">JPEG (.jpg)</option>
+                        <option value="image/png">PNG (.png)</option>
+                        <option value="application/pdf">PDF (.pdf)</option>
+                        <option value="image/tiff">TIFF (.tiff)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>اسم الملف (اختياري)</label>
+                    <input type="text" id="scanFileName" placeholder="اتركه فارغاً لاستخدام الاسم التلقائي">
+                </div>
+                <div class="scanner-preview" id="scanPreviewArea">
+                    <span class="placeholder">📄 حدد نوع الماسح واضغط "بدء المسح"</span>
+                </div>
+                <div class="scanner-actions">
+                    <button class="btn btn-b" onclick="startScanner()">📡 بدء المسح</button>
+                    <button class="btn btn-g" onclick="acceptScanFile()" id="acceptScanBtn" style="display:none;">✅
+                        قبول</button>
+                    <button class="btn btn-y" onclick="resetScan()">🔄 إعادة</button>
+                    <button class="btn btn-r" onclick="closeScanner()">❌ إلغاء</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <div class="app-footer">
+            <div class="dev-info">
+                <span><span class="logo">👨‍💻</span></span> <!-- تم استبدال حرف ن برمز رجل على كمبيوتر -->
+                <span class="highlight-name">نائل حسن عبود</span>
+                <span class="separator">|</span>
+                <span>📋 وحدة التطبيقات والتقارير الإحصائية</span>
+                <span class="separator">|</span>
+                <span>📅 2026</span>
+                <span class="separator">|</span>
+                <span>⚕️ نظام المرضى الراقدين</span>
+            </div>
+        </div>
+
+    </div><!-- end app -->
+
+    <script>
+        // ============================================================
+        // معالج الأخطاء العام
+        // ============================================================
+        window.onerror = function (msg, url, line, col, error) {
+            console.error('خطأ:', msg, error);
+            alert('حدث خطأ: ' + msg + '\nيرجى إرسال التفاصيل إلى المطور.');
+            return true;
+        };
+
+        // ============================================================
+        // قائمة المستشفيات
+        // ============================================================
+        var HOSPITALS = [
+            'مدينة الإمام الحسين عليه السلام الطبية',
+            'مستشفى كربلاء التعليمي للأطفال',
+            'مستشفى سفير الإمام الحسين عليه السلام الجراحي',
+            'مستشفى النسائية والتوليد التعليمي',
+            'مستشفى الإمام الحسن المجتبى عليه السلام التعليمي',
+            'مستشفى الهندية التعليمي',
+            'مستشفى عين التمر العام',
+            'مستشفى الحسينية العام'
+        ];
+
+        // ============================================================
+        // المحافظات العراقية مع الأقضية
+        // ============================================================
+        var DISTRICTS_FULL = {
+            'بغداد': ['الكرخ', 'الرصافة', 'الصدر', 'الأعظمية', 'الكاظمية', 'المنصور', 'الراشدية', 'الغزالية', 'الدورة', 'الحبيبية', 'المدائن', 'الطالبية', 'الشعب', 'العدل', 'الزعفرانية'],
+            'البصرة': ['البصرة القديمة', 'الزبير', 'أبو الخصيب', 'الفاو', 'القرنة', 'شط العرب', 'المدينة', 'الدير', 'الهوير', 'المناوي', 'القرنة'],
+            'نينوى': ['الموصل', 'تلعفر', 'الحمدانية', 'البعاج', 'سنجار', 'الشيخان', 'الحضر', 'القيروان', 'مخمور', 'الزمار'],
+            'أربيل': ['أربيل', 'جوان', 'كوي سنجق', 'مخمور', 'شقلاوة', 'سوران', 'العمادية', 'بارزان'],
+            'النجف': ['النجف', 'الكوفة', 'المناذرة', 'الحيرة', 'المشخاب'],
+            'كربلاء': ['كربلاء', 'الحسينية', 'الهندية', 'عين التمر', 'الحر', 'الجدول الغربي', 'الخيرات'],
+            'دهوك': ['دهوك', 'زاخو', 'سميل', 'العمادية', 'بردرش'],
+            'الأنبار': ['الرامدي', 'الفلوجة', 'حديثة', 'هيت', 'عناه', 'القائم', 'الخالدية', 'عامرية الفلوجة'],
+            'بابل': ['الحلة', 'المسيب', 'الهاشمية', 'المحمودية', 'الإسكندرية', 'النجيبية', 'الخيرات', 'القاسم'],
+            'القادسية': ['الديوانية', 'الشنافية', 'عفر', 'الصويرة', 'الراشدية', 'الداور'],
+            'ديالى': ['بعقوبة', 'المقدادية', 'الخالص', 'بهرز', 'خانقين', 'العبارة', 'المنصورية'],
+            'ذي قار': ['الناصرية', 'الشطرة', 'الرفاعي', 'سوق الشيوخ', 'قضاء الجبايش', 'الإصلاح', 'الغراف'],
+            'ميسان': ['العمارة', 'الكحلاء', 'الميمونة', 'قلعة صالح', 'علي الغربي', 'المجر'],
+            'واسط': ['الكوت', 'العزيزية', 'الحي', 'الصويرة', 'النعمانية', 'الزرباطية'],
+            'صلاح الدين': ['تكريت', 'سامراء', 'الدجيل', 'الضلوعية', 'الشرقاط', 'بيجي', 'بلد'],
+            'كركوك': ['كركوك', 'الحويجة', 'داقوق', 'الدبس', 'الزيوية'],
+            'السليمانية': ['حلبجة', 'خرمال', 'باوة نور', 'تاوة'],
+            'المثنى': ['السماوة', 'الرميثة', 'الخضر', 'الوركاء', 'سلمان'],
+            'ذي قار': ['الناصرية', 'الشطرة', 'الرفاعي', 'سوق الشيوخ', 'قضاء الجبايش', 'الإصلاح', 'الغراف']
+        };
+
+        // ============================================================
+        // قائمة ICD-10
+        // ============================================================
+        var ICD_CODES = {
+            'A00': 'الكوليرا',
+            'A01': 'حمى التيفوئيد',
+            'A02': 'عدوى السالمونيلا الأخرى',
+            'A03': 'الشيغيلات',
+            'A04': 'عدوى بكتيرية معوية أخرى',
+            'A05': 'تسمم غذائي بكتيري',
+            'A06': 'داء الأميبات',
+            'A07': 'أمراض معوية أولية أخرى',
+            'A08': 'عدوى معوية فيروسية',
+            'A09': 'إسهال والتهاب معدي معوي',
+            'A15': 'سل رئوي',
+            'A16': 'سل الجهاز التنفسي',
+            'A17': 'سل الجهاز العصبي',
+            'A18': 'سل الأعضاء الأخرى',
+            'A19': 'سل الدخني',
+            'A20': 'الطاعون',
+            'A21': 'التولاريميا',
+            'A22': 'الجمرة الخبيثة',
+            'A23': 'داء البروسيلات',
+            'A24': 'الرعام والمرتبطات',
+            'A25': 'حمى العضات',
+            'A26': 'داء الليستريات',
+            'A27': 'داء البريميات',
+            'A28': 'أمراض بكتيرية حيوانية أخرى',
+            'A30': 'الجذام',
+            'A31': 'عدوى فطرية أخرى',
+            'A32': 'داء الليستريات',
+            'A33': 'الكزاز الوليدي',
+            'A34': 'الكزاز',
+            'A35': 'الكزاز',
+            'A36': 'الخناق',
+            'A37': 'السعال الديكي',
+            'A38': 'الحمى القرمزية',
+            'A39': 'عدوى المكورات السحائية',
+            'A40': 'تسمم الدم العقدي',
+            'A41': 'تسمم الدم الجرثومي',
+            'A42': 'داء الشعيات',
+            'A43': 'داء النوكارديات',
+            'A44': 'داء البارتونيلات',
+            'A46': 'الحمرة',
+            'A48': 'أمراض بكتيرية أخرى',
+            'A49': 'عدوى بكتيرية غير محددة',
+            'A50': 'الزهري الخلقي',
+            'A51': 'الزهري المبكر',
+            'A52': 'الزهري المتأخر',
+            'A53': 'الزهري',
+            'A54': 'عدوى المكورات البنية',
+            'A55': 'اللمفاويات',
+            'A56': 'عدوى المتدثرة',
+            'A57': 'القرحة اللينة',
+            'A58': 'الورم الحبيبي الأربي',
+            'A59': 'داء المشعرات',
+            'A60': 'عدوى فيروس الهربس',
+            'A63': 'أمراض تنتقل بالاتصال الجنسي',
+            'A64': 'أمراض تنتقل بالاتصال الجنسي غير محددة',
+            'A65': 'الزهري غير التناسلي',
+            'A66': 'الداء العليقي',
+            'A67': 'الداء النجفي',
+            'A68': 'الحمى الراجعة',
+            'A69': 'أمراض لولبية أخرى',
+            'A70': 'عدوى المتدثرة',
+            'A71': 'التراخوما',
+            'A74': 'أمراض المتدثرة الأخرى',
+            'A75': 'التيفوس',
+            'A77': 'الحمى المبقعة',
+            'A78': 'الحمى المبقعة',
+            'A79': 'الريكتسيات',
+            'A80': 'شلل الأطفال الحاد',
+            'A81': 'عدوى الفيروس البطيء',
+            'A82': 'داء الكلب',
+            'A83': 'التهاب الدماغ الفيروسي',
+            'A84': 'التهاب الدماغ الذي ينقله القراد',
+            'A85': 'التهاب الدماغ الفيروسي الأخرى',
+            'A86': 'التهاب الدماغ الفيروسي غير محددة',
+            'A87': 'التهاب السحايا الفيروسي',
+            'A88': 'عدوى فيروسية الجهاز العصبي',
+            'A89': 'عدوى فيروسية الجهاز العصبي غير محددة',
+            'A90': 'حمى الضنك',
+            'A91': 'حمى الضنك النزفية',
+            'A92': 'أمراض فيروسية ينقلها البعوض',
+            'A93': 'أمراض فيروسية ينقلها المفصليات',
+            'A94': 'أمراض فيروسية ينقلها المفصليات غير محددة',
+            'A95': 'الحمى الصفراء',
+            'A96': 'حمى الخنازير',
+            'A97': 'حمى الضنك',
+            'A98': 'أمراض فيروسية ينقلها المفصليات',
+            'A99': 'أمراض فيروسية ينقلها المفصليات غير محددة',
+            'B00': 'عدوى فيروس الهربس',
+            'B01': 'جدري الماء',
+            'B02': 'الهربس النطاقي',
+            'B03': 'جدري',
+            'B04': 'جدري القردة',
+            'B05': 'الحصبة',
+            'B06': 'الحصبة الألمانية',
+            'B07': 'الثآليل الفيروسية',
+            'B08': 'عدوى فيروسية جلدية أخرى',
+            'B09': 'عدوى فيروسية جلدية غير محددة',
+            'B10': 'عدوى فيروس الهربس',
+            'B15': 'التهاب الكبد الفيروسي الحاد',
+            'B16': 'التهاب الكبد الفيروسي الحاد',
+            'B17': 'التهاب الكبد الفيروسي الحاد الأخرى',
+            'B18': 'التهاب الكبد الفيروسي المزمن',
+            'B19': 'التهاب الكبد الفيروسي غير محددة',
+            'B20': 'مرض فيروس نقص المناعة البشرية',
+            'B21': 'مرض فيروس نقص المناعة البشرية',
+            'B22': 'مرض فيروس نقص المناعة البشرية',
+            'B23': 'مرض فيروس نقص المناعة البشرية',
+            'B24': 'مرض فيروس نقص المناعة البشرية غير محددة',
+            'B25': 'عدوى الفيروس المضخم للخلايا',
+            'B26': 'النكاف',
+            'B27': 'كثرة الوحيدات',
+            'B30': 'التهاب الملتحمة الفيروسي',
+            'B33': 'أمراض فيروسية أخرى',
+            'B34': 'عدوى فيروسية غير محددة',
+            'B35': 'سعفة',
+            'B36': 'فطريات جلدية أخرى',
+            'B37': 'داء المبيضات',
+            'B38': 'داء النوسجات',
+            'B39': 'داء النوسجات',
+            'B40': 'داء الانسجة',
+            'B41': 'داء النوسجات',
+            'B42': 'داء النوسجات',
+            'B43': 'داء النوسجات',
+            'B44': 'داء الرشاشيات',
+            'B45': 'داء النوسجات',
+            'B46': 'داء النوسجات',
+            'B47': 'داء النوسجات',
+            'B48': 'داء النوسجات',
+            'B49': 'داء النوسجات',
+            'B50': 'الملاريا',
+            'B51': 'الملاريا',
+            'B52': 'الملاريا',
+            'B53': 'الملاريا',
+            'B54': 'الملاريا',
+            'B55': 'داء الليشمانيات',
+            'B56': 'داء المثقبيات',
+            'B57': 'داء المثقبيات',
+            'B58': 'داء المقوسات',
+            'B59': 'داء المتكيسات',
+            'B60': 'أمراض أولية أخرى',
+            'B64': 'أمراض أولية غير محددة',
+            'B65': 'داء البلهارسيات',
+            'B66': 'داء البلهارسيات الأخرى',
+            'B67': 'داء المشوكات',
+            'B68': 'داء الشريطيات',
+            'B69': 'داء الكيسات المذنبة',
+            'B70': 'داء الشريطيات الأخرى',
+            'B71': 'داء الديدان الشريطية الأخرى',
+            'B72': 'داء الأسطوانيات',
+            'B73': 'داء كلابية الذنب',
+            'B74': 'داء الفيلاريات',
+            'B75': 'داء الشعرينات',
+            'B76': 'داء الأنكيلوستوما',
+            'B77': 'داء الأسكارس',
+            'B78': 'داء الأسطوانيات',
+            'B79': 'داء الدودة الشصية',
+            'B80': 'داء السرميات',
+            'B81': 'داء الديدان المعوية الأخرى',
+            'B82': 'داء الديدان المعوية غير محددة',
+            'B83': 'داء الديدان الأخرى',
+            'B85': 'القمل',
+            'B86': 'الجرب',
+            'B87': 'داء النغف',
+            'B88': 'غزو الطفيليات الأخرى',
+            'B89': 'غزو الطفيليات غير محددة',
+            'B90': 'آثار السل',
+            'B91': 'آثار شلل الأطفال',
+            'B92': 'آثار الجذام',
+            'B94': 'آثار الأمراض المعدية والطفيلية الأخرى',
+            'B95': 'المكورات العقدية والمكورات العنقودية',
+            'B96': 'العوامل البكتيرية الأخرى',
+            'B97': 'العوامل الفيروسية',
+            'B98': 'العوامل الأخرى',
+            'B99': 'أمراض معدية أخرى غير محددة',
+
+            // الأورام (C00-D48)
+            'C00': 'ورم خبيث في الشفة',
+            'C01': 'ورم خبيث في اللسان',
+            'C02': 'ورم خبيث في اللسان',
+            'C03': 'ورم خبيث في اللثة',
+            'C04': 'ورم خبيث في أرضية الفم',
+            'C05': 'ورم خبيث في الحنك',
+            'C06': 'ورم خبيث في الفم',
+            'C07': 'ورم خبيث في الغدة النكافية',
+            'C08': 'ورم خبيث في الغدد اللعابية',
+            'C09': 'ورم خبيث في اللوزة',
+            'C10': 'ورم خبيث في البلعوم الفموي',
+            'C11': 'ورم خبيث في البلعوم الأنفي',
+            'C12': 'ورم خبيث في البلعوم الحنجري',
+            'C13': 'ورم خبيث في البلعوم السفلي',
+            'C14': 'ورم خبيث في البلعوم',
+            'C15': 'ورم خبيث في المريء',
+            'C16': 'ورم خبيث في المعدة',
+            'C17': 'ورم خبيث في الأمعاء الدقيقة',
+            'C18': 'ورم خبيث في القولون',
+            'C19': 'ورم خبيث في المستقيم',
+            'C20': 'ورم خبيث في المستقيم',
+            'C21': 'ورم خبيث في فتحة الشرج',
+            'C22': 'ورم خبيث في الكبد',
+            'C23': 'ورم خبيث في المرارة',
+            'C24': 'ورم خبيث في القناة الصفراوية',
+            'C25': 'ورم خبيث في البنكرياس',
+            'C26': 'ورم خبيث في الجهاز الهضمي',
+            'C30': 'ورم خبيث في الأنف',
+            'C31': 'ورم خبيث في الجيوب الأنفية',
+            'C32': 'ورم خبيث في الحنجرة',
+            'C33': 'ورم خبيث في القصبة الهوائية',
+            'C34': 'ورم خبيث في الرئة',
+            'C37': 'ورم خبيث في الغدة الصعترية',
+            'C38': 'ورم خبيث في القلب والمنصف',
+            'C39': 'ورم خبيث في الجهاز التنفسي',
+            'C40': 'ورم خبيث في العظام',
+            'C41': 'ورم خبيث في العظام',
+            'C43': 'ورم خبيث في الجلد',
+            'C44': 'ورم خبيث في الجلد',
+            'C45': 'ورم خبيث في النسيج الضام',
+            'C46': 'ورم خبيث في النسيج الضام',
+            'C47': 'ورم خبيث في الأعصاب',
+            'C48': 'ورم خبيث في الصفاق',
+            'C49': 'ورم خبيث في الأنسجة الرخوة',
+            'C50': 'ورم خبيث في الثدي',
+            'C51': 'ورم خبيث في الفرج',
+            'C52': 'ورم خبيث في المهبل',
+            'C53': 'ورم خبيث في عنق الرحم',
+            'C54': 'ورم خبيث في جسم الرحم',
+            'C55': 'ورم خبيث في الرحم',
+            'C56': 'ورم خبيث في المبيض',
+            'C57': 'ورم خبيث في الأعضاء التناسلية الأنثوية',
+            'C58': 'ورم خبيث في المشيمة',
+            'C60': 'ورم خبيث في القضيب',
+            'C61': 'ورم خبيث في البروستاتا',
+            'C62': 'ورم خبيث في الخصية',
+            'C63': 'ورم خبيث في الأعضاء التناسلية الذكرية',
+            'C64': 'ورم خبيث في الكلى',
+            'C65': 'ورم خبيث في الحالب',
+            'C66': 'ورم خبيث في المثانة',
+            'C67': 'ورم خبيث في المثانة',
+            'C68': 'ورم خبيث في الأعضاء البولية',
+            'C69': 'ورم خبيث في العين',
+            'C70': 'ورم خبيث في السحايا',
+            'C71': 'ورم خبيث في الدماغ',
+            'C72': 'ورم خبيث في الحبل الشوكي',
+            'C73': 'ورم خبيث في الغدة الدرقية',
+            'C74': 'ورم خبيث في الغدة الكظرية',
+            'C75': 'ورم خبيث في الغدد الصماء الأخرى',
+            'C76': 'ورم خبيث في مواقع أخرى',
+            'C77': 'ورم خبيث في العقد اللمفية',
+            'C78': 'ورم خبيث في الجهاز التنفسي',
+            'C79': 'ورم خبيث في مواقع أخرى',
+            'C80': 'ورم خبيث غير محدد',
+            'C81': 'لمفوما هودجكين',
+            'C82': 'لمفوما جريبية',
+            'C83': 'لمفوما لا هودجكينية',
+            'C84': 'لمفوما محيطية',
+            'C85': 'لمفوما لا هودجكينية أخرى',
+            'C86': 'لمفوما جلدية',
+            'C87': 'لمفوما',
+            'C88': 'أمراض البروتينات',
+            'C89': 'لمفوما',
+            'C90': 'الورم النقوي المتعدد',
+            'C91': 'لوكيميا لمفاوية',
+            'C92': 'لوكيميا نخاعية',
+            'C93': 'لوكيميا وحيدة الخلية',
+            'C94': 'لوكيميا أخرى',
+            'C95': 'لوكيميا غير محددة',
+            'C96': 'أورام الخلايا',
+            'D00': 'سرطانة في الموقع',
+            'D01': 'سرطانة في الموقع',
+            'D02': 'سرطانة في الموقع',
+            'D03': 'سرطانة في الموقع',
+            'D04': 'سرطانة في الموقع',
+            'D05': 'سرطانة في الموقع',
+            'D06': 'سرطانة في الموقع',
+            'D07': 'سرطانة في الموقع',
+            'D09': 'سرطانة في الموقع',
+            'D10': 'ورم حميد في الفم',
+            'D11': 'ورم حميد في الغدد اللعابية',
+            'D12': 'ورم حميد في القولون',
+            'D13': 'ورم حميد في الجهاز الهضمي',
+            'D14': 'ورم حميد في الجهاز التنفسي',
+            'D15': 'ورم حميد في الصدر',
+            'D16': 'ورم حميد في العظام',
+            'D17': 'ورم حميد في الأنسجة الدهنية',
+            'D18': 'ورم وعائي',
+            'D19': 'ورم حميد في النسيج الضام',
+            'D20': 'ورم حميد في الصفاق',
+            'D21': 'ورم حميد في الأنسجة الرخوة',
+            'D22': 'ورم حميد في الجلد',
+            'D23': 'ورم حميد في الجلد',
+            'D24': 'ورم حميد في الثدي',
+            'D25': 'ورم ليفي في الرحم',
+            'D26': 'ورم حميد في الرحم',
+            'D27': 'ورم حميد في المبيض',
+            'D28': 'ورم حميد في الأعضاء التناسلية',
+            'D29': 'ورم حميد في الأعضاء التناسلية الذكرية',
+            'D30': 'ورم حميد في الجهاز البولي',
+            'D31': 'ورم حميد في العين',
+            'D32': 'ورم حميد في السحايا',
+            'D33': 'ورم حميد في الدماغ',
+            'D34': 'ورم حميد في الغدة الدرقية',
+            'D35': 'ورم حميد في الغدد الصماء',
+            'D36': 'ورم حميد في مواقع أخرى',
+            'D37': 'ورم غير محدد في الجهاز الهضمي',
+            'D38': 'ورم غير محدد في الجهاز التنفسي',
+            'D39': 'ورم غير محدد في الأعضاء التناسلية',
+            'D40': 'ورم غير محدد في الأعضاء التناسلية الذكرية',
+            'D41': 'ورم غير محدد في الجهاز البولي',
+            'D42': 'ورم غير محدد في السحايا',
+            'D43': 'ورم غير محدد في الدماغ',
+            'D44': 'ورم غير محدد في الغدد الصماء',
+            'D45': 'كثرة الحمر الحقيقية',
+            'D46': 'متلازمة خلل التنسج النخاعي',
+            'D47': 'أورام غير محددة',
+            'D48': 'ورم غير محدد في مواقع أخرى',
+
+            // أمراض الغدد الصماء (E00-E90)
+            'E00': 'متلازمة قصور الغدة الدرقية الخلقي',
+            'E01': 'قصور الغدة الدرقية',
+            'E02': 'قصور الغدة الدرقية',
+            'E03': 'قصور الغدة الدرقية الآخر',
+            'E04': 'تضخم الغدة الدرقية غير السمي',
+            'E05': 'فرط نشاط الغدة الدرقية',
+            'E06': 'التهاب الغدة الدرقية',
+            'E07': 'أمراض الغدة الدرقية الأخرى',
+            'E10': 'داء السكري المعتمد على الأنسولين',
+            'E11': 'داء السكري غير المعتمد على الأنسولين',
+            'E12': 'داء السكري المرتبط بسوء التغذية',
+            'E13': 'داء السكري الآخر',
+            'E14': 'داء السكري غير المحدد',
+            'E15': 'غيبوبة سكر الدم',
+            'E16': 'اضطرابات إفراز الأنسولين',
+            'E20': 'قصور الغدة الجار درقية',
+            'E21': 'فرط نشاط الغدة الجار درقية',
+            'E22': 'فرط نشاط الغدة النخامية',
+            'E23': 'قصور الغدة النخامية',
+            'E24': 'متلازمة كوشينغ',
+            'E25': 'اضطرابات الغدة الكظرية',
+            'E26': 'فرط الألدوستيرونية',
+            'E27': 'أمراض الغدة الكظرية الأخرى',
+            'E28': 'اضطرابات المبيض',
+            'E29': 'اضطرابات الخصية',
+            'E30': 'اضطرابات البلوغ',
+            'E31': 'اضطرابات الغدد الصماء',
+            'E32': 'أمراض الغدة الصعترية',
+            'E34': 'اضطرابات الغدد الصماء الأخرى',
+            'E35': 'اضطرابات الغدد الصماء',
+            'E40': 'نقص البروتين والطاقة',
+            'E41': 'نقص البروتين',
+            'E42': 'نقص البروتين والطاقة',
+            'E43': 'نقص البروتين والطاقة',
+            'E44': 'نقص البروتين والطاقة',
+            'E45': 'تأخر النمو',
+            'E46': 'نقص البروتين والطاقة غير محدد',
+            'E50': 'نقص فيتامين أ',
+            'E51': 'نقص فيتامين ب1',
+            'E52': 'نقص فيتامين ب3',
+            'E53': 'نقص فيتامين ب',
+            'E54': 'نقص فيتامين ج',
+            'E55': 'نقص فيتامين د',
+            'E56': 'نقص فيتامين أخرى',
+            'E58': 'نقص الكالسيوم',
+            'E59': 'نقص السيلينيوم',
+            'E60': 'نقص الزنك',
+            'E61': 'نقص العناصر الأخرى',
+            'E63': 'نقص التغذية الأخرى',
+            'E64': 'آثار نقص التغذية',
+            'E65': 'السمنة الموضعية',
+            'E66': 'السمنة',
+            'E67': 'زيادة التغذية الأخرى',
+            'E68': 'آثار زيادة التغذية',
+            'E70': 'اضطرابات استقلاب الأحماض الأمينية',
+            'E71': 'اضطرابات استقلاب الأحماض الأمينية',
+            'E72': 'اضطرابات استقلاب الأحماض الأمينية',
+            'E73': 'عدم تحمل اللاكتوز',
+            'E74': 'اضطرابات استقلاب الكربوهيدرات',
+            'E75': 'اضطرابات استقلاب الدهون',
+            'E76': 'اضطرابات استقلاب الجليكوزامينوغليكان',
+            'E77': 'اضطرابات استقلاب البروتينات',
+            'E78': 'اضطرابات استقلاب البروتينات الدهنية',
+            'E79': 'اضطرابات استقلاب البورين',
+            'E80': 'اضطرابات استقلاب البيليروبين',
+            'E83': 'اضطرابات استقلاب المعادن',
+            'E84': 'التليف الكيسي',
+            'E85': 'الداء النشواني',
+            'E86': 'نقص حجم السوائل',
+            'E87': 'اضطرابات الكهارل',
+            'E88': 'اضطرابات استقلابية أخرى',
+            'E89': 'اضطرابات استقلابية',
+            'E90': 'اضطرابات استقلابية',
+
+            // الاضطرابات النفسية والسلوكية (F00-F99)
+            'F00': 'الخرف في مرض الزهايمر',
+            'F01': 'الخرف الوعائي',
+            'F02': 'الخرف في أمراض أخرى',
+            'F03': 'الخرف غير المحدد',
+            'F04': 'متلازمة فقدان الذاكرة العضوية',
+            'F05': 'الهذيان',
+            'F06': 'اضطرابات عقلية عضوية أخرى',
+            'F07': 'اضطرابات الشخصية العضوية',
+            'F09': 'اضطراب عضوي غير محدد',
+            'F10': 'اضطرابات ناتجة عن تعاطي الكحول',
+            'F11': 'اضطرابات ناتجة عن تعاطي الأفيونيات',
+            'F12': 'اضطرابات ناتجة عن تعاطي القنب',
+            'F13': 'اضطرابات ناتجة عن تعاطي المهدئات',
+            'F14': 'اضطرابات ناتجة عن تعاطي الكوكايين',
+            'F15': 'اضطرابات ناتجة عن تعاطي المنبهات الأخرى',
+            'F16': 'اضطرابات ناتجة عن تعاطي المهلوسات',
+            'F17': 'اضطرابات ناتجة عن تعاطي التبغ',
+            'F18': 'اضطرابات ناتجة عن تعاطي المذيبات',
+            'F19': 'اضطرابات ناتجة عن تعاطي مواد متعددة',
+            'F20': 'الفصام',
+            'F21': 'اضطراب فصامي الشكل',
+            'F22': 'اضطراب الوهم',
+            'F23': 'اضطراب ذهاني حاد',
+            'F24': 'الذهان الناتج عن الحث',
+            'F25': 'الاضطراب الفصامي العاطفي',
+            'F28': 'ذهان غير عضوي آخر',
+            'F29': 'ذهان غير محدد',
+            'F30': 'نوبة هوسية',
+            'F31': 'الاضطراب الوجداني ثنائي القطب',
+            'F32': 'نوبة اكتئابية',
+            'F33': 'اضطراب اكتئابي راجع',
+            'F34': 'اضطرابات وجدانية مستمرة',
+            'F38': 'اضطرابات وجدانية أخرى',
+            'F39': 'اضطراب وجداني غير محدد',
+            'F40': 'الرهاب',
+            'F41': 'اضطرابات القلق الأخرى',
+            'F42': 'الاضطراب الوسواسي القهري',
+            'F43': 'اضطرابات الكرب',
+            'F44': 'الاضطرابات الانفصالية',
+            'F45': 'الاضطرابات الجسدية',
+            'F48': 'اضطرابات عصابية أخرى',
+            'F50': 'اضطرابات الأكل',
+            'F51': 'اضطرابات النوم غير العضوية',
+            'F52': 'اضطرابات الوظيفة الجنسية',
+            'F53': 'اضطرابات النفاس',
+            'F54': 'اضطرابات نفسية',
+            'F55': 'إساءة استخدام المواد',
+            'F59': 'متلازمات سلوكية أخرى',
+            'F60': 'اضطرابات الشخصية',
+            'F61': 'اضطرابات الشخصية المختلطة',
+            'F62': 'تغيرات الشخصية الدائمة',
+            'F63': 'اضطرابات العادات والدوافع',
+            'F64': 'اضطرابات الهوية الجنسية',
+            'F65': 'اضطرابات التفضيل الجنسي',
+            'F66': 'اضطرابات النمو الجنسي',
+            'F68': 'اضطرابات الشخصية الأخرى',
+            'F69': 'اضطراب الشخصية غير محدد',
+            'F70': 'التخلف العقلي الخفيف',
+            'F71': 'التخلف العقلي المتوسط',
+            'F72': 'التخلف العقلي الشديد',
+            'F73': 'التخلف العقلي العميق',
+            'F78': 'التخلف العقلي الآخر',
+            'F79': 'التخلف العقلي غير محدد',
+            'F80': 'اضطرابات تطور الكلام',
+            'F81': 'اضطرابات تطور المهارات الدراسية',
+            'F82': 'اضطراب تطور الوظائف الحركية',
+            'F83': 'اضطراب تطوري مختلط',
+            'F84': 'التوحد',
+            'F88': 'اضطرابات تطورية أخرى',
+            'F89': 'اضطراب تطوري غير محدد',
+            'F90': 'اضطراب فرط النشاط',
+            'F91': 'اضطرابات السلوك',
+            'F92': 'اضطرابات السلوك المختلطة',
+            'F93': 'اضطرابات عاطفية في الطفولة',
+            'F94': 'اضطرابات الأداء الاجتماعي',
+            'F95': 'اضطرابات التشنجات اللاإرادية',
+            'F98': 'اضطرابات سلوكية أخرى',
+            'F99': 'اضطراب نفسي غير محدد',
+
+            // أمراض الجهاز العصبي (G00-G99)
+            'G00': 'التهاب السحايا الجرثومي',
+            'G01': 'التهاب السحايا',
+            'G02': 'التهاب السحايا',
+            'G03': 'التهاب السحايا',
+            'G04': 'التهاب الدماغ والنخاع',
+            'G05': 'التهاب الدماغ',
+            'G06': 'خراج داخل الجمجمة',
+            'G07': 'خراج داخل الجمجمة',
+            'G08': 'التهاب الوريد داخل الجمجمة',
+            'G09': 'آثار الأمراض الالتهابية',
+            'G10': 'داء هنتنغتون',
+            'G11': 'الرنح الوراثي',
+            'G12': 'ضمور العضلات الشوكي',
+            'G13': 'ضمور الجهاز العصبي',
+            'G14': 'ضمور الجهاز العصبي',
+            'G20': 'مرض باركنسون',
+            'G21': 'مرض باركنسون الثانوي',
+            'G22': 'مرض باركنسون',
+            'G23': 'أمراض العقد القاعدية الأخرى',
+            'G24': 'خلل التوتر',
+            'G25': 'اضطرابات الحركة الأخرى',
+            'G26': 'اضطرابات الحركة',
+            'G30': 'مرض الزهايمر',
+            'G31': 'أمراض تنكسية أخرى',
+            'G32': 'أمراض تنكسية',
+            'G35': 'التصلب المتعدد',
+            'G36': 'إزالة الميالين الحادة الأخرى',
+            'G37': 'إزالة الميالين المزمنة',
+            'G40': 'الصرع',
+            'G41': 'حالة الصرع',
+            'G43': 'الصداع النصفي',
+            'G44': 'أنواع أخرى من الصداع',
+            'G45': 'نوبات نقص التروية الدماغية',
+            'G46': 'متلازمات الأوعية الدماغية',
+            'G47': 'اضطرابات النوم',
+            'G50': 'اضطرابات العصب الثلاثي التوائم',
+            'G51': 'اضطرابات العصب الوجهي',
+            'G52': 'اضطرابات الأعصاب القحفية الأخرى',
+            'G53': 'اضطرابات الأعصاب القحفية',
+            'G54': 'اضطرابات الضفائر العصبية',
+            'G55': 'اضطرابات الضفائر العصبية',
+            'G56': 'اضطرابات العصب المتوسط',
+            'G57': 'اضطرابات الأعصاب الطرفية',
+            'G58': 'اعتلالات الأعصاب الأخرى',
+            'G59': 'اعتلالات الأعصاب',
+            'G60': 'اعتلال الأعصاب الوراثي',
+            'G61': 'اعتلال الأعصاب الالتهابي',
+            'G62': 'اعتلال الأعصاب الآخر',
+            'G63': 'اعتلال الأعصاب',
+            'G64': 'اضطرابات الأعصاب الأخرى',
+            'G70': 'الوهن العضلي الوبيل',
+            'G71': 'اضطرابات العضلات الأولية',
+            'G72': 'اعتلال العضلات الآخر',
+            'G73': 'اعتلال العضلات',
+            'G80': 'الشلل الدماغي',
+            'G81': 'شلل نصفي',
+            'G82': 'شلل سفلي',
+            'G83': 'شلل أخرى',
+            'G90': 'اضطرابات الجهاز العصبي اللاإرادي',
+            'G91': 'استسقاء الرأس',
+            'G92': 'اعتلال الدماغ السمي',
+            'G93': 'اضطرابات الدماغ الأخرى',
+            'G94': 'اضطرابات الدماغ',
+            'G95': 'أمراض النخاع الشوكي الأخرى',
+            'G96': 'اضطرابات الجهاز العصبي المركزي',
+            'G97': 'اضطرابات الجهاز العصبي',
+            'G98': 'اضطرابات الجهاز العصبي',
+            'G99': 'اضطرابات الجهاز العصبي',
+
+            // أمراض العين (H00-H59)
+            'H00': 'التهاب الجفن',
+            'H01': 'التهابات الجفن الأخرى',
+            'H02': 'اضطرابات الجفن الأخرى',
+            'H04': 'اضطرابات الغدة الدمعية',
+            'H05': 'اضطرابات الحجاج',
+            'H06': 'اضطرابات الحجاج',
+            'H10': 'التهاب الملتحمة',
+            'H11': 'اضطرابات الملتحمة الأخرى',
+            'H15': 'اضطرابات الصلبة',
+            'H16': 'التهاب القرنية',
+            'H17': 'ندوب القرنية',
+            'H18': 'اضطرابات القرنية الأخرى',
+            'H19': 'اضطرابات القرنية',
+            'H20': 'التهاب القزحية',
+            'H21': 'اضطرابات القزحية الأخرى',
+            'H22': 'اضطرابات القزحية',
+            'H25': 'الساد الشيخوخي',
+            'H26': 'الساد الآخر',
+            'H27': 'اضطرابات العدسة الأخرى',
+            'H28': 'اضطرابات العدسة',
+            'H30': 'التهاب المشيمية',
+            'H31': 'اضطرابات المشيمية الأخرى',
+            'H32': 'اضطرابات المشيمية',
+            'H33': 'انفصال الشبكية',
+            'H34': 'انسداد الأوعية الشبكية',
+            'H35': 'اضطرابات الشبكية الأخرى',
+            'H36': 'اضطرابات الشبكية',
+            'H40': 'الزرق',
+            'H42': 'الزرق',
+            'H43': 'اضطرابات الجسم الزجاجي',
+            'H44': 'اضطرابات العين',
+            'H45': 'اضطرابات العين',
+            'H46': 'التهاب العصب البصري',
+            'H47': 'اضطرابات العصب البصري',
+            'H48': 'اضطرابات العصب البصري',
+            'H49': 'شلل عضلات العين',
+            'H50': 'الحول',
+            'H51': 'اضطرابات الحركة العينية',
+            'H52': 'اضطرابات الانكسار',
+            'H53': 'اضطرابات الرؤية',
+            'H54': 'العمى',
+            'H55': 'الرأرأة',
+            'H57': 'اضطرابات العين الأخرى',
+            'H58': 'اضطرابات العين',
+            'H59': 'اضطرابات العين',
+
+            // أمراض الأذن (H60-H95)
+            'H60': 'التهاب الأذن الخارجية',
+            'H61': 'اضطرابات الأذن الخارجية الأخرى',
+            'H62': 'اضطرابات الأذن الخارجية',
+            'H65': 'التهاب الأذن الوسطى غير القيحي',
+            'H66': 'التهاب الأذن الوسطى القيحي',
+            'H67': 'التهاب الأذن الوسطى',
+            'H68': 'التهاب النفير',
+            'H69': 'اضطرابات النفير الأخرى',
+            'H70': 'التهاب الخشاء',
+            'H71': 'التهاب الصوان',
+            'H72': 'انثقاب طبلة الأذن',
+            'H73': 'اضطرابات طبلة الأذن الأخرى',
+            'H74': 'اضطرابات الأذن الوسطى الأخرى',
+            'H75': 'اضطرابات الأذن الوسطى',
+            'H80': 'تصلب الأذن',
+            'H81': 'اضطرابات الدهليز',
+            'H82': 'متلازمات الدوار',
+            'H83': 'اضطرابات الأذن الداخلية الأخرى',
+            'H90': 'فقدان السمع التوصيلي',
+            'H91': 'فقدان السمع الحسي العصبي',
+            'H92': 'ألم الأذن',
+            'H93': 'اضطرابات الأذن الأخرى',
+            'H94': 'اضطرابات الأذن',
+            'H95': 'اضطرابات الأذن',
+
+            // أمراض جهاز الدوران (I00-I99)
+            'I00': 'الحمى الروماتيزمية الحادة',
+            'I01': 'الحمى الروماتيزمية مع إصابة القلب',
+            'I02': 'الرقص الروماتيزمي',
+            'I05': 'أمراض الصمام المترالي الروماتيزمية',
+            'I06': 'أمراض الصمام الأبهري الروماتيزمية',
+            'I07': 'أمراض الصمام الثلاثي الشرف',
+            'I08': 'أمراض الصمامات المتعددة',
+            'I09': 'أمراض القلب الروماتيزمية الأخرى',
+            'I10': 'ارتفاع ضغط الدم الأساسي',
+            'I11': 'مرض ارتفاع ضغط الدم القلبي',
+            'I12': 'مرض ارتفاع ضغط الدم الكلوي',
+            'I13': 'مرض ارتفاع ضغط الدم القلبي والكلوي',
+            'I15': 'ارتفاع ضغط الدم الثانوي',
+            'I20': 'ذبحة صدرية',
+            'I21': 'احتشاء عضلة القلب الحاد',
+            'I22': 'احتشاء عضلة القلب المتكرر',
+            'I23': 'مضاعفات احتشاء عضلة القلب الحاد',
+            'I24': 'أمراض القلب الإقفارية الأخرى',
+            'I25': 'مرض القلب التاجي المزمن',
+            'I26': 'الانصمام الرئوي',
+            'I27': 'أمراض القلب الرئوية الأخرى',
+            'I28': 'أمراض الأوعية الرئوية الأخرى',
+            'I30': 'التهاب التامور الحاد',
+            'I31': 'أمراض التامور الأخرى',
+            'I32': 'التهاب التامور',
+            'I33': 'التهاب الشغاف الحاد',
+            'I34': 'اضطرابات الصمام المترالي غير الروماتيزمية',
+            'I35': 'اضطرابات الصمام الأبهري غير الروماتيزمية',
+            'I36': 'اضطرابات الصمام الثلاثي الشرف غير الروماتيزمية',
+            'I37': 'اضطرابات الصمام الرئوي',
+            'I38': 'اضطرابات الصمامات غير محددة',
+            'I39': 'اضطرابات الصمامات',
+            'I40': 'التهاب عضلة القلب الحاد',
+            'I41': 'التهاب عضلة القلب',
+            'I42': 'اعتلال عضلة القلب',
+            'I43': 'اعتلال عضلة القلب',
+            'I44': 'إحصار أذيني بطيني',
+            'I45': 'اضطرابات التوصيل الأخرى',
+            'I46': 'توقف القلب',
+            'I47': 'خفقان القلب',
+            'I48': 'رجفان أذيني',
+            'I49': 'اضطرابات النظم القلبية الأخرى',
+            'I50': 'فشل القلب',
+            'I51': 'مضاعفات أمراض القلب',
+            'I52': 'اضطرابات القلب',
+            'I60': 'نزف تحت العنكبوتية',
+            'I61': 'نزف داخل الدماغ',
+            'I62': 'نزف داخل الجمجمة الأخرى',
+            'I63': 'احتشاء دماغي',
+            'I64': 'سكتة دماغية غير محددة',
+            'I65': 'انسداد الشرايين الدماغية',
+            'I66': 'انسداد الشرايين الدماغية',
+            'I67': 'أمراض الأوعية الدماغية الأخرى',
+            'I68': 'اضطرابات الأوعية الدماغية',
+            'I69': 'آثار أمراض الأوعية الدماغية',
+            'I70': 'تصلب شرياني',
+            'I71': 'تمدد الأبهر',
+            'I72': 'تمدد الأوعية الدموية الأخرى',
+            'I73': 'أمراض الأوعية المحيطية الأخرى',
+            'I74': 'الانصمام الشرياني',
+            'I77': 'أمراض الشرايين الأخرى',
+            'I78': 'أمراض الشعيرات الدموية',
+            'I79': 'اضطرابات الشرايين',
+            'I80': 'التهاب الوريد والتهاب الوريد الخثاري',
+            'I81': 'الانصمام الرئوي',
+            'I82': 'انصمام وريدي آخر',
+            'I83': 'الدوالي في الأطراف السفلية',
+            'I84': 'البواسير',
+            'I85': 'الدوالي المريئية',
+            'I86': 'الدوالي في مواقع أخرى',
+            'I87': 'اضطرابات الأوردة الأخرى',
+            'I88': 'التهاب العقد اللمفية غير النوعي',
+            'I89': 'اضطرابات الأوعية اللمفية الأخرى',
+            'I95': 'انخفاض ضغط الدم',
+            'I97': 'اضطرابات جهاز الدوران',
+            'I98': 'اضطرابات جهاز الدوران',
+            'I99': 'اضطرابات جهاز الدوران غير محددة',
+
+            // أمراض الجهاز التنفسي (J00-J99)
+            'J00': 'زكام حاد',
+            'J01': 'التهاب الجيوب الحاد',
+            'J02': 'التهاب البلعوم الحاد',
+            'J03': 'التهاب اللوزتين الحاد',
+            'J04': 'التهاب الحنجرة والرغامى الحاد',
+            'J05': 'التهاب الرغامى الحاد',
+            'J06': 'التهابات الجهاز التنفسي العلوي الحادة',
+            'J09': 'إنفلونزا فيروسية محددة',
+            'J10': 'إنفلونزا فيروسية محددة',
+            'J11': 'إنفلونزا غير محددة',
+            'J12': 'التهاب رئوي فيروسي',
+            'J13': 'التهاب رئوي بالمكورات الرئوية',
+            'J14': 'التهاب رئوي بالمستدمية النزلية',
+            'J15': 'التهاب رئوي جرثومي',
+            'J16': 'التهاب رئوي بسبب كائنات أخرى',
+            'J17': 'التهاب رئوي',
+            'J18': 'التهاب رئوي غير محدد',
+            'J20': 'التهاب القصبات الحاد',
+            'J21': 'التهاب القصيبات الحاد',
+            'J22': 'التهاب الجهاز التنفسي السفلي الحاد',
+            'J30': 'التهاب الأنف التحسسي',
+            'J31': 'التهاب الأنف المزمن',
+            'J32': 'التهاب الجيوب المزمن',
+            'J33': 'سليلة الأنف',
+            'J34': 'اضطرابات الأنف والجيوب الأخرى',
+            'J35': 'أمراض اللوزتين المزمنة',
+            'J36': 'خراج حول اللوزة',
+            'J37': 'التهاب الحنجرة المزمن',
+            'J38': 'أمراض الحبال الصوتية',
+            'J39': 'أمراض الجهاز التنفسي العلوي الأخرى',
+            'J40': 'التهاب القصبات غير محدد',
+            'J41': 'التهاب القصبات المزمن البسيط',
+            'J42': 'التهاب القصبات المزمن غير محدد',
+            'J43': 'انتفاخ الرئة',
+            'J44': 'مرض رئوي انسدادي مزمن',
+            'J45': 'الربو',
+            'J46': 'حالة الربو',
+            'J47': 'توسع القصبات',
+            'J60': 'داء الرئة الفحمي',
+            'J61': 'داء الرئة بالأسبستوس',
+            'J62': 'داء الرئة بالسيليكا',
+            'J63': 'داء الرئة بالغبار العضوي',
+            'J64': 'داء الرئة بالغبار غير محدد',
+            'J65': 'داء الرئة بالسل',
+            'J66': 'أمراض الرئة المهنية',
+            'J67': 'فرط التحسس الرئوي',
+            'J68': 'أمراض الرئة الناتجة عن مواد كيميائية',
+            'J69': 'الالتهاب الرئوي الشفطي',
+            'J70': 'أمراض الرئة الناتجة عن عوامل خارجية',
+            'J80': 'متلازمة الضائقة التنفسية الحادة',
+            'J81': 'الوذمة الرئوية',
+            'J82': 'فرط الحمضات الرئوي',
+            'J84': 'أمراض الرئة الخلالي الأخرى',
+            'J85': 'خراج الرئة',
+            'J86': 'الدبيلة',
+            'J90': 'انصباب جنبي',
+            'J91': 'انصباب جنبي',
+            'J92': 'لويحات جنبية',
+            'J93': 'استرواح الصدر',
+            'J94': 'اضطرابات الجنبة الأخرى',
+            'J95': 'اضطرابات الجهاز التنفسي',
+            'J96': 'فشل تنفسي',
+            'J98': 'اضطرابات الجهاز التنفسي الأخرى',
+            'J99': 'اضطرابات الجهاز التنفسي',
+
+            // أمراض الجهاز الهضمي (K00-K93)
+            'K00': 'اضطرابات تطور الأسنان',
+            'K01': 'الأسنان المنطمرة',
+            'K02': 'تسوس الأسنان',
+            'K03': 'أمراض الأسنان الأخرى',
+            'K04': 'أمراض اللب والنسيج حول السني',
+            'K05': 'التهاب اللثة والأمراض حول السنية',
+            'K06': 'اضطرابات اللثة الأخرى',
+            'K07': 'تشوهات الفك السني',
+            'K08': 'اضطرابات الأسنان الأخرى',
+            'K09': 'أكياس الفم',
+            'K10': 'أمراض الفك الأخرى',
+            'K11': 'أمراض الغدد اللعابية',
+            'K12': 'التهاب الفم',
+            'K13': 'أمراض الشفة والغشاء المخاطي',
+            'K14': 'أمراض اللسان',
+            'K20': 'التهاب المريء',
+            'K21': 'مرض الجزر المعدي المريئي',
+            'K22': 'أمراض المريء الأخرى',
+            'K23': 'اضطرابات المريء',
+            'K25': 'قرحة المعدة',
+            'K26': 'قرحة الاثني عشر',
+            'K27': 'قرحة هضمية غير محددة',
+            'K28': 'قرحة الصائم',
+            'K29': 'التهاب المعدة والاثني عشر',
+            'K30': 'عسر الهضم',
+            'K31': 'أمراض المعدة والاثني عشر الأخرى',
+            'K35': 'التهاب الزائدة الدودية الحاد',
+            'K36': 'التهاب الزائدة الدودية الآخر',
+            'K37': 'التهاب الزائدة الدودية غير محدد',
+            'K38': 'أمراض الزائدة الدودية الأخرى',
+            'K40': 'فتق أربي',
+            'K41': 'فتق فخذي',
+            'K42': 'فتق سري',
+            'K43': 'فتق بطني',
+            'K44': 'فتق حجابي',
+            'K45': 'فتق بطني آخر',
+            'K46': 'فتق غير محدد',
+            'K50': 'داء كرون',
+            'K51': 'التهاب القولون التقرحي',
+            'K52': 'التهاب المعدة والأمعاء غير المعدي',
+            'K55': 'اضطرابات الأوعية المعوية',
+            'K56': 'العلوص والشلل المعوي',
+            'K57': 'أمراض الرتج المعوي',
+            'K58': 'متلازمة القولون العصبي',
+            'K59': 'اضطرابات وظيفية معوية أخرى',
+            'K60': 'الشقوق الشرجية',
+            'K61': 'خراج الشرج والمستقيم',
+            'K62': 'أمراض الشرج والمستقيم الأخرى',
+            'K63': 'أمراض الأمعاء الأخرى',
+            'K64': 'البواسير',
+            'K65': 'التهاب الصفاق',
+            'K66': 'اضطرابات الصفاق الأخرى',
+            'K67': 'اضطرابات الصفاق',
+            'K70': 'مرض الكبد الكحولي',
+            'K71': 'مرض الكبد السمي',
+            'K72': 'الفشل الكبدي',
+            'K73': 'التهاب الكبد المزمن',
+            'K74': 'تليف وتشمع الكبد',
+            'K75': 'أمراض الكبد الالتهابية الأخرى',
+            'K76': 'أمراض الكبد الأخرى',
+            'K77': 'اضطرابات الكبد',
+            'K80': 'تحص صفراوي',
+            'K81': 'التهاب المرارة',
+            'K82': 'أمراض المرارة الأخرى',
+            'K83': 'أمراض القناة الصفراوية الأخرى',
+            'K85': 'التهاب البنكرياس الحاد',
+            'K86': 'أمراض البنكرياس الأخرى',
+            'K87': 'اضطرابات البنكرياس',
+            'K90': 'سوء الامتصاص المعوي',
+            'K91': 'اضطرابات الجهاز الهضمي',
+            'K92': 'اضطرابات الجهاز الهضمي',
+            'K93': 'اضطرابات الجهاز الهضمي',
+
+            // أمراض الجلد (L00-L99)
+            'L00': 'متلازمة الجلد المحروق',
+            'L01': 'القوباء',
+            'L02': 'خراج جلدي',
+            'L03': 'التهاب النسيج الخلوي',
+            'L04': 'التهاب العقد اللمفية الحاد',
+            'L05': 'الكيس الشعري',
+            'L08': 'التهابات الجلد الموضعية الأخرى',
+            'L10': 'الفقاع',
+            'L11': 'أمراض الفقاع الأخرى',
+            'L12': 'الفقاع الفقاعي',
+            'L13': 'أمراض الجلد الفقاعية الأخرى',
+            'L14': 'أمراض الجلد الفقاعية',
+            'L20': 'التهاب الجلد التأتبي',
+            'L21': 'التهاب الجلد الدهني',
+            'L22': 'التهاب الجلد الحفاظي',
+            'L23': 'التهاب الجلد التماسي التحسسي',
+            'L24': 'التهاب الجلد التماسي المهيج',
+            'L25': 'التهاب الجلد التماسي غير محدد',
+            'L26': 'التهاب الجلد التقشري',
+            'L27': 'التهاب الجلد الناتج عن مواد',
+            'L28': 'الحزاز البسيط المزمن',
+            'L29': 'الحكة',
+            'L30': 'أنواع أخرى من التهاب الجلد',
+            'L40': 'الصدفية',
+            'L41': 'الحزاز المسطح',
+            'L42': 'الحزاز الوردي',
+            'L43': 'الحزاز المسطح',
+            'L44': 'أمراض الحزاز الأخرى',
+            'L45': 'أمراض الحزاز',
+            'L50': 'الشرى',
+            'L51': 'الحمامي متعددة الأشكال',
+            'L52': 'الحمامي العقدية',
+            'L53': 'الحمامي',
+            'L54': 'الحمامي',
+            'L55': 'الحروق الشمسية',
+            'L56': 'تغيرات الجلد الأخرى الناتجة عن الأشعة',
+            'L57': 'تغيرات الجلد الناتجة عن التعرض المزمن',
+            'L58': 'تغيرات الجلد الناتجة عن الإشعاع',
+            'L59': 'اضطرابات الجلد الناتجة عن الإشعاع',
+            'L60': 'أمراض الأظافر',
+            'L62': 'اضطرابات الأظافر',
+            'L63': 'الثعلبة',
+            'L64': 'الثعلبة الوراثية',
+            'L65': 'الثعلبة الأخرى',
+            'L66': 'التهاب الجريبات',
+            'L67': 'اضطرابات لون الشعر',
+            'L68': 'فرط الشعر',
+            'L70': 'حب الشباب',
+            'L71': 'الوردية',
+            'L72': 'أكياس الجلد',
+            'L73': 'أمراض الجريبات الأخرى',
+            'L74': 'اضطرابات التعرق',
+            'L75': 'اضطرابات الغدد العرقية المفرزة',
+            'L80': 'البهاق',
+            'L81': 'اضطرابات التصبغ الأخرى',
+            'L82': 'الورم الدهني',
+            'L83': 'الشواك الأسود',
+            'L84': 'الكالو',
+            'L85': 'تصلب الجلد',
+            'L86': 'تصلب الجلد',
+            'L87': 'اضطرابات الجلد',
+            'L88': 'التهاب الجلد',
+            'L89': 'قرحة الفراش',
+            'L90': 'ضمور الجلد',
+            'L91': 'تضخم الجلد',
+            'L92': 'اضطرابات الجلد الحبيبية',
+            'L93': 'الذئبة الحمامية',
+            'L94': 'اضطرابات الجلد الضامة',
+            'L95': 'التهاب الأوعية الجلدي',
+            'L97': 'قرحة الأطراف السفلية',
+            'L98': 'اضطرابات الجلد الأخرى',
+            'L99': 'اضطرابات الجلد',
+
+            // أمراض الجهاز العضلي الهيكلي (M00-M99)
+            'M00': 'التهاب المفاصل القيحي',
+            'M01': 'التهاب المفاصل',
+            'M02': 'التهاب المفاصل التفاعلي',
+            'M03': 'التهاب المفاصل',
+            'M04': 'التهاب المفاصل',
+            'M05': 'التهاب المفاصل الرثياني المصلي الإيجابي',
+            'M06': 'التهاب المفاصل الرثياني الآخر',
+            'M07': 'التهاب المفاصل الصدافي',
+            'M08': 'التهاب المفاصل الرثياني الشبابي',
+            'M09': 'التهاب المفاصل الرثياني الشبابي',
+            'M10': 'النقرس',
+            'M11': 'أمراض ترسب البلورات الأخرى',
+            'M12': 'التهاب المفاصل الآخر',
+            'M13': 'التهاب المفاصل',
+            'M14': 'التهاب المفاصل',
+            'M15': 'الفصال العظمي المعمم',
+            'M16': 'الفصال العظمي في الورك',
+            'M17': 'الفصال العظمي في الركبة',
+            'M18': 'الفصال العظمي في اليد',
+            'M19': 'الفصال العظمي الآخر',
+            'M20': 'تشوهات الأصابع المكتسبة',
+            'M21': 'تشوهات الأطراف الأخرى المكتسبة',
+            'M22': 'اضطرابات الرضفة',
+            'M23': 'اضطرابات داخل المفصل في الركبة',
+            'M24': 'اضطرابات مفصلية محددة أخرى',
+            'M25': 'اضطرابات مفصلية أخرى',
+            'M30': 'التهاب الأوعية',
+            'M31': 'التهاب الأوعية',
+            'M32': 'الذئبة الحمراء الجهازية',
+            'M33': 'التهاب العضلات الجلدية',
+            'M34': 'تصلب الجلد الجهازي',
+            'M35': 'أمراض النسيج الضام الجهازية الأخرى',
+            'M36': 'اضطرابات النسيج الضام',
+            'M40': 'الجنف',
+            'M41': 'الجنف',
+            'M42': 'تنكس العمود الفقري',
+            'M43': 'تشوهات العمود الفقري',
+            'M45': 'التهاب الفقار المقسط',
+            'M46': 'التهابات الفقار الأخرى',
+            'M47': 'داء الفقار',
+            'M48': 'اضطرابات فقارية أخرى',
+            'M49': 'اضطرابات فقارية',
+            'M50': 'اضطرابات القرص الفقري العنقي',
+            'M51': 'اضطرابات القرص الفقري القطني',
+            'M53': 'اضطرابات الفقار الأخرى',
+            'M54': 'آلام الظهر',
+            'M60': 'التهاب العضلات',
+            'M61': 'تكلس العضلات',
+            'M62': 'اضطرابات عضلية أخرى',
+            'M63': 'اضطرابات عضلية',
+            'M65': 'التهاب الأوتار والغمد الزليلي',
+            'M66': 'تمزق الغمد الزليلي',
+            'M67': 'اضطرابات الغمد الزليلي والوتر',
+            'M70': 'اضطرابات الأنسجة الرخوة المرتبطة بالاستخدام',
+            'M71': 'التهاب الجراب الآخر',
+            'M72': 'اضطرابات الأنسجة الليفية',
+            'M75': 'اضطرابات الكتف',
+            'M76': 'اعتلال الأوتار في الطرف السفلي',
+            'M77': 'اعتلال الأوتار الأخرى',
+            'M79': 'اضطرابات الأنسجة الرخوة الأخرى',
+            'M80': 'هشاشة العظام مع كسر',
+            'M81': 'هشاشة العظام دون كسر',
+            'M82': 'هشاشة العظام',
+            'M83': 'تلين العظام',
+            'M84': 'اضطرابات استمرارية العظم',
+            'M85': 'اضطرابات كثافة العظام',
+            'M86': 'التهاب العظم والنقي',
+            'M87': 'نخر العظم',
+            'M88': 'مرض باجيت',
+            'M89': 'اضطرابات عظمية أخرى',
+            'M90': 'اضطرابات عظمية',
+            'M91': 'اضطرابات العظام',
+            'M92': 'اضطرابات العظام',
+            'M93': 'اضطرابات العظام',
+            'M94': 'اضطرابات الغضاريف',
+            'M95': 'تشوهات عظمية أخرى',
+            'M96': 'اضطرابات العظام',
+            'M99': 'اضطرابات العضلات',
+
+            // أمراض الجهاز البولي التناسلي (N00-N99)
+            'N00': 'متلازمة الكلية الحادة',
+            'N01': 'متلازمة الكلية السريعة التقدم',
+            'N02': 'بيلة دموية متكررة',
+            'N03': 'متلازمة الكلية المزمنة',
+            'N04': 'المتلازمة الكلوية',
+            'N05': 'متلازمة الكلية غير محددة',
+            'N06': 'بيلة بروتينية معزولة',
+            'N07': 'اعتلال الكلية الوراثي',
+            'N08': 'اعتلال الكلية',
+            'N10': 'التهاب الكلية الخلالي الحاد',
+            'N11': 'التهاب الكلية الخلالي المزمن',
+            'N12': 'التهاب الكلية الخلالي غير محدد',
+            'N13': 'اعتلال الكلية الانسدادي',
+            'N14': 'اعتلال الكلية الناتج عن الأدوية',
+            'N15': 'أمراض الكلية الخلالي الأخرى',
+            'N16': 'اضطرابات الكلية الخلالي',
+            'N17': 'الفشل الكلوي الحاد',
+            'N18': 'مرض الكلى المزمن',
+            'N19': 'الفشل الكلوي غير محدد',
+            'N20': 'تحصي الكلية',
+            'N21': 'تحصي المسالك البولية السفلية',
+            'N22': 'تحصي المسالك البولية',
+            'N23': 'مغص كلوي غير محدد',
+            'N25': 'اضطرابات ناتجة عن خلل وظيفة الكلية',
+            'N26': 'انكماش الكلية غير محدد',
+            'N27': 'اضطرابات الكلية الصغيرة',
+            'N28': 'اضطرابات الكلية والحالب الأخرى',
+            'N29': 'اضطرابات الكلية',
+            'N30': 'التهاب المثانة',
+            'N31': 'اضطرابات وظيفية في المثانة',
+            'N32': 'اضطرابات المثانة الأخرى',
+            'N33': 'اضطرابات المثانة',
+            'N34': 'التهاب الإحليل',
+            'N35': 'تضيق الإحليل',
+            'N36': 'اضطرابات الإحليل الأخرى',
+            'N37': 'اضطرابات الإحليل',
+            'N39': 'اضطرابات الجهاز البولي الأخرى',
+            'N40': 'تضخم البروستاتا الحميد',
+            'N41': 'التهاب البروستاتا',
+            'N42': 'اضطرابات البروستاتا الأخرى',
+            'N43': 'استسقاء الخصية',
+            'N44': 'التواء الخصية',
+            'N45': 'التهاب الخصية والبربخ',
+            'N46': 'العقم عند الذكور',
+            'N47': 'فرط طول القلفة',
+            'N48': 'اضطرابات القضيب الأخرى',
+            'N49': 'اضطرابات التهابية في الأعضاء التناسلية الذكرية',
+            'N50': 'اضطرابات الأعضاء التناسلية الذكرية الأخرى',
+            'N51': 'اضطرابات الأعضاء التناسلية الذكرية',
+            'N60': 'اعتلال الثدي الحميد',
+            'N61': 'الاضطرابات الالتهابية للثدي',
+            'N62': 'تضخم الثدي',
+            'N63': 'كتلة غير محددة في الثدي',
+            'N64': 'اضطرابات الثدي الأخرى',
+            'N70': 'التهاب البوق والمبيض',
+            'N71': 'التهاب الرحم',
+            'N72': 'التهاب عنق الرحم',
+            'N73': 'أمراض التهابية أخرى في الحوض',
+            'N74': 'أمراض التهابية في الحوض',
+            'N75': 'أمراض غدة بارثولين',
+            'N76': 'أمراض التهابية أخرى في المهبل',
+            'N77': 'اضطرابات التهابية في المهبل',
+            'N80': 'انتباذ بطانة الرحم',
+            'N81': 'هبوط الأعضاء التناسلية الأنثوية',
+            'N82': 'ناسور الجهاز التناسلي الأنثوي',
+            'N83': 'اضطرابات المبيض',
+            'N84': 'سليلة الجهاز التناسلي الأنثوي',
+            'N85': 'اضطرابات غير التهابية في الرحم',
+            'N86': 'اضطرابات غير التهابية في عنق الرحم',
+            'N87': 'خلل التنسج العنقي',
+            'N88': 'اضطرابات غير التهابية في عنق الرحم',
+            'N89': 'اضطرابات غير التهابية في المهبل',
+            'N90': 'اضطرابات غير التهابية في الفرج',
+            'N91': 'انقطاع الحيض',
+            'N92': 'حيض غزير أو متكرر',
+            'N93': 'نزف غير طبيعي من الرحم',
+            'N94': 'ألم وحالات أخرى مرتبطة بالدورة الشهرية',
+            'N95': 'اضطرابات سن اليأس',
+            'N96': 'الإجهاض المتكرر',
+            'N97': 'العقم عند النساء',
+            'N98': 'مضاعفات مرتبطة بالإخصاب المساعد',
+            'N99': 'اضطرابات الجهاز البولي التناسلي',
+
+            // الحمل والولادة والنفاس (O00-O99)
+            'O00': 'حمل خارج الرحم',
+            'O01': 'الرحى العدارية',
+            'O02': 'أشكال أخرى من الحمل غير الطبيعي',
+            'O03': 'إجهاض تلقائي',
+            'O04': 'إجهاض طبي',
+            'O05': 'أنواع أخرى من الإجهاض',
+            'O06': 'إجهاض غير محدد',
+            'O08': 'مضاعفات الإجهاض',
+            'O10': 'فرط ضغط الدم السابق للحمل',
+            'O11': 'فرط ضغط الدم المتفاقم',
+            'O12': 'وذمة وبيلة بروتينية في الحمل',
+            'O13': 'فرط ضغط الدم الخفيف في الحمل',
+            'O14': 'تسمم الحمل',
+            'O15': 'ارتعاج الحمل',
+            'O16': 'فرط ضغط الدم في الحمل',
+            'O20': 'نزف مبكر في الحمل',
+            'O21': 'التقيؤ المفرط في الحمل',
+            'O22': 'مضاعفات الأوردة في الحمل',
+            'O23': 'التهابات الجهاز البولي في الحمل',
+            'O24': 'داء السكري في الحمل',
+            'O25': 'نقص التغذية في الحمل',
+            'O26': 'رعاية الأمهات لحالات أخرى',
+            'O30': 'حمل متعدد',
+            'O31': 'مضاعفات خاصة بالحمل المتعدد',
+            'O32': 'رعاية الأمهات بسبب وضع الجنين غير الطبيعي',
+            'O33': 'رعاية الأمهات بسبب عدم التناسب',
+            'O34': 'رعاية الأمهات بسبب تشوهات الأعضاء التناسلية',
+            'O35': 'رعاية الأمهات بسبب تشوه الجنين',
+            'O36': 'رعاية الأمهات بسبب مشاكل الجنين الأخرى',
+            'O40': 'تعدد السوائل',
+            'O41': 'اضطرابات السائل الأمنيوسي الأخرى',
+            'O42': 'تمزق الأغشية المبكر',
+            'O43': 'اضطرابات المشيمة',
+            'O44': 'المشيمة المنزاحة',
+            'O45': 'انفصال المشيمة المبكر',
+            'O46': 'نزف قبل الولادة',
+            'O47': 'مخاض كاذب',
+            'O48': 'حمل متأخر',
+            'O60': 'ولادة مبكرة',
+            'O61': 'فشل تحريض المخاض',
+            'O62': 'شذوذات المخاض',
+            'O63': 'مخاض طويل',
+            'O64': 'عرقلة بسبب وضع الجنين غير الطبيعي',
+            'O65': 'عرقلة بسبب عدم التناسب',
+            'O66': 'عرقلة مخاضية أخرى',
+            'O67': 'نزف في المخاض والولادة',
+            'O68': 'ضائقة جنينية',
+            'O69': 'مضاعفات الحبل السري',
+            'O70': 'تمزق العجان أثناء الولادة',
+            'O71': 'إصابات الولادة الأخرى',
+            'O72': 'نزف ما بعد الولادة',
+            'O73': 'احتباس المشيمة',
+            'O74': 'مضاعفات التخدير في الولادة',
+            'O75': 'مضاعفات المخاض والولادة الأخرى',
+            'O80': 'ولادة وحيدة تلقائية',
+            'O81': 'ولادة بالملقط',
+            'O82': 'ولادة بالشفط',
+            'O83': 'ولادة مهبلية مساعدة أخرى',
+            'O84': 'ولادة متعددة',
+            'O85': 'حمى النفاس',
+            'O86': 'التهابات النفاس الأخرى',
+            'O87': 'مضاعفات الأوردة في النفاس',
+            'O88': 'انصمام في النفاس',
+            'O89': 'مضاعفات التخدير في النفاس',
+            'O90': 'مضاعفات النفاس',
+            'O91': 'التهابات الثدي المرتبطة بالولادة',
+            'O92': 'اضطرابات الثدي الأخرى المرتبطة بالولادة',
+            'O94': 'مضاعفات الحمل والولادة والنفاس',
+            'O95': 'وفاة الولادة غير المحددة',
+            'O96': 'وفاة الأم من أي سبب',
+            'O97': 'وفاة الأم من سبب مباشر',
+            'O98': 'الأمراض المعدية والطفيلية لدى الأم',
+            'O99': 'أمراض الأم الأخرى',
+
+            // الحالات المحيطة بالولادة (P00-P96)
+            'P00': 'الجنين والمولود المتأثر بحالات الأم',
+            'P01': 'الجنين والمولود المتأثر بمضاعفات الحمل',
+            'P02': 'الجنين والمولود المتأثر بمضاعفات المشيمة',
+            'P03': 'الجنين والمولود المتأثر بمضاعفات المخاض',
+            'P04': 'الجنين والمولود المتأثر بالمواد',
+            'P05': 'نمو الجنين البطيء',
+            'P07': 'اضطرابات متعلقة بمدة الحمل',
+            'P08': 'اضطرابات متعلقة بوزن الولادة',
+            'P10': 'تمزق داخل الجمجمة',
+            'P11': 'إصابات الولادة في الجهاز العصبي',
+            'P12': 'إصابات الولادة في فروة الرأس',
+            'P13': 'إصابات الولادة في الهيكل العظمي',
+            'P14': 'إصابات الولادة في الضفيرة العصبية',
+            'P15': 'إصابات الولادة الأخرى',
+            'P20': 'نقص الأكسجين داخل الرحم',
+            'P21': 'اختناق الولادة',
+            'P22': 'ضائقة تنفسية عند الوليد',
+            'P23': 'التهاب رئوي خلقي',
+            'P24': 'متلازمة الشفط الوليدي',
+            'P25': 'انتفاخ الرئة الخلالي',
+            'P26': 'نزف رئوي',
+            'P27': 'أمراض تنفسية مزمنة في الفترة المحيطة بالولادة',
+            'P28': 'حالات تنفسية أخرى',
+            'P29': 'اضطرابات القلب والأوعية الدموية',
+            'P35': 'أمراض فيروسية خلقية',
+            'P36': 'إنتان جرثومي عند الوليد',
+            'P37': 'أمراض معدية وطفيلية خلقية أخرى',
+            'P38': 'التهاب السرة عند الوليد',
+            'P39': 'التهابات أخرى في الفترة المحيطة بالولادة',
+            'P50': 'نزف قبل الولادة عند الجنين',
+            'P51': 'نزف عند الوليد',
+            'P52': 'نزف داخل الجمجمة عند الجنين والوليد',
+            'P53': 'مرض النزف عند الجنين والوليد',
+            'P54': 'نزف آخر عند الجنين والوليد',
+            'P55': 'مرض انحلال الدم عند الجنين والوليد',
+            'P56': 'استسقاء الجنين والوليد',
+            'P57': 'اليرقان النووي',
+            'P58': 'اليرقان الوليدي',
+            'P59': 'اليرقان الوليدي الآخر',
+            'P60': 'انتشار التخثر داخل الأوعية',
+            'P61': 'اضطرابات الدم الأخرى',
+            'P70': 'اضطرابات التمثيل الغذائي للجلوكوز',
+            'P71': 'اضطرابات الأيونات',
+            'P72': 'اضطرابات الغدد الصماء الأخرى',
+            'P74': 'اضطرابات الكهارل',
+            'P75': 'انسداد معوي',
+            'P76': 'انسداد معوي آخر',
+            'P77': 'التهاب الأمعاء والقولون الناخر',
+            'P78': 'اضطرابات الجهاز الهضمي الأخرى',
+            'P80': 'انخفاض حرارة الجسم عند الوليد',
+            'P81': 'اضطرابات تنظيم الحرارة الأخرى',
+            'P83': 'حالات أخرى خاصة بالجلد',
+            'P90': 'اختلاجات عند الوليد',
+            'P91': 'اضطرابات دماغية أخرى',
+            'P92': 'مشاكل التغذية عند الوليد',
+            'P93': 'تفاعلات الدواء عند الوليد',
+            'P94': 'اضطرابات النغمة العضلية',
+            'P95': 'وفاة الجنين لأسباب غير محددة',
+            'P96': 'حالات أخرى في الفترة المحيطة بالولادة',
+
+            // التشوهات الخلقية (Q00-Q99)
+            'Q00': 'انعدام الدماغ',
+            'Q01': 'القيلة الدماغية',
+            'Q02': 'صغر الرأس',
+            'Q03': 'استسقاء الرأس الخلقي',
+            'Q04': 'تشوهات الدماغ الخلقية الأخرى',
+            'Q05': 'السنسنة المشقوقة',
+            'Q06': 'تشوهات الحبل الشوكي الأخرى',
+            'Q07': 'تشوهات الجهاز العصبي الخلقية الأخرى',
+            'Q10': 'تشوهات الجفن الخلقية',
+            'Q11': 'تشوهات العين الخلقية',
+            'Q12': 'تشوهات العدسة الخلقية',
+            'Q13': 'تشوهات الجزء الأمامي من العين',
+            'Q14': 'تشوهات الجزء الخلفي من العين',
+            'Q15': 'تشوهات العين الخلقية الأخرى',
+            'Q16': 'تشوهات الأذن الخلقية',
+            'Q17': 'تشوهات الأذن الخلقية الأخرى',
+            'Q18': 'تشوهات الوجه والرقبة الخلقية',
+            'Q20': 'تشوهات القلب الخلقية',
+            'Q21': 'تشوهات الحاجز القلبي',
+            'Q22': 'تشوهات الصمامات الرئوية والثلاثية الشرف',
+            'Q23': 'تشوهات الصمامات الأبهري والمترالي',
+            'Q24': 'تشوهات القلب الخلقية الأخرى',
+            'Q25': 'تشوهات الأبهر والشرايين الكبيرة',
+            'Q26': 'تشوهات الأوردة الكبيرة',
+            'Q27': 'تشوهات الأوعية الدموية المحيطية',
+            'Q28': 'تشوهات الدورة الدموية الأخرى',
+            'Q30': 'تشوهات الأنف الخلقية',
+            'Q31': 'تشوهات الحنجرة الخلقية',
+            'Q32': 'تشوهات القصبة الهوائية والشعب الهوائية',
+            'Q33': 'تشوهات الرئة الخلقية',
+            'Q34': 'تشوهات الجهاز التنفسي الخلقية الأخرى',
+            'Q35': 'شق الحنك',
+            'Q36': 'شق الشفة',
+            'Q37': 'شق الحنك والشفة',
+            'Q38': 'تشوهات اللسان والفم والبلعوم',
+            'Q39': 'تشوهات المريء الخلقية',
+            'Q40': 'تشوهات الجهاز الهضمي العلوي الأخرى',
+            'Q41': 'تشوهات الأمعاء الدقيقة',
+            'Q42': 'تشوهات الأمعاء الغليظة',
+            'Q43': 'تشوهات الأمعاء الأخرى',
+            'Q44': 'تشوهات المرارة والكبد والقنوات الصفراوية',
+            'Q45': 'تشوهات الجهاز الهضمي الأخرى',
+            'Q50': 'تشوهات المبيض الخلقية',
+            'Q51': 'تشوهات الرحم الخلقية',
+            'Q52': 'تشوهات الأعضاء التناسلية الأنثوية الأخرى',
+            'Q53': 'خصية غير نازلة',
+            'Q54': 'تحت المبال',
+            'Q55': 'تشوهات الأعضاء التناسلية الذكرية الأخرى',
+            'Q56': 'جنس غير محدد',
+            'Q60': 'غياب الكلى',
+            'Q61': 'أمراض الكلى الخلقية',
+            'Q62': 'تشوهات الحالب الخلقية',
+            'Q63': 'تشوهات الكلى الأخرى',
+            'Q64': 'تشوهات الجهاز البولي الأخرى',
+            'Q65': 'تشوهات الورك الخلقية',
+            'Q66': 'تشوهات القدم الخلقية',
+            'Q67': 'تشوهات الهيكل العظمي للرأس والوجه والعمود الفقري',
+            'Q68': 'تشوهات العظام والأطراف',
+            'Q69': 'تعدد الأصابع والأصابع الملتصقة',
+            'Q70': 'الارتفاق',
+            'Q71': 'نقص الأطراف العلوية',
+            'Q72': 'نقص الأطراف السفلية',
+            'Q73': 'نقص الأطراف غير محدد',
+            'Q74': 'تشوهات الأطراف الأخرى',
+            'Q75': 'تشوهات الجمجمة والوجه',
+            'Q76': 'تشوهات العمود الفقري',
+            'Q77': 'خلل التنسج العظمي الغضروفي',
+            'Q78': 'تشوهات العظام الأخرى',
+            'Q79': 'تشوهات الجهاز العضلي الهيكلي الأخرى',
+            'Q80': 'السماك الخلقي',
+            'Q81': 'انحلال الجلد الفقاعي',
+            'Q82': 'تشوهات الجلد الأخرى',
+            'Q83': 'تشوهات الثدي',
+            'Q84': 'تشوهات الأظافر والشعر والأسنان',
+            'Q85': 'الورم الليفي العصبي',
+            'Q86': 'متلازمات التشوه الخلقي من أسباب خارجية',
+            'Q87': 'متلازمات التشوه الخلقي الأخرى',
+            'Q89': 'تشوهات خلقية أخرى',
+            'Q90': 'متلازمة داون',
+            'Q91': 'متلازمة إدواردز ومتلازمة باتو',
+            'Q92': 'تثلث الصبغيات الأخرى',
+            'Q93': 'حذف الصبغيات',
+            'Q95': 'إعادة ترتيب الصبغيات المتوازنة',
+            'Q96': 'متلازمة تيرنر',
+            'Q97': 'شذوذات الصبغيات الجنسية الأخرى',
+            'Q98': 'شذوذات الصبغيات الجنسية الأخرى',
+            'Q99': 'شذوذات الصبغيات الأخرى',
+
+            // الأعراض والعلامات (R00-R99)
+            'R00': 'شذوذات النبض',
+            'R01': 'نفخات قلبية',
+            'R02': 'الغرغرينا',
+            'R03': 'قراءات ضغط دم غير طبيعية',
+            'R04': 'نزف من الجهاز التنفسي',
+            'R05': 'سعال',
+            'R06': 'اضطرابات التنفس',
+            'R07': 'ألم في الحلق والصدر',
+            'R08': 'أعراض أخرى تتعلق بالجهاز التنفسي',
+            'R09': 'أعراض وعلامات أخرى للجهاز الدوري والتنفسي',
+            'R10': 'ألم بطني',
+            'R11': 'غثيان وتقيؤ',
+            'R12': 'حرقة المعدة',
+            'R13': 'عسر البلع',
+            'R14': 'انتفاخ البطن',
+            'R15': 'سلس البراز',
+            'R16': 'تضخم الكبد والطحال',
+            'R17': 'اليرقان غير المحدد',
+            'R18': 'استسقاء البطن',
+            'R19': 'أعراض وعلامات أخرى للجهاز الهضمي',
+            'R20': 'اضطرابات الإحساس الجلدي',
+            'R21': 'طفح جلدي',
+            'R22': 'كتلة موضعية',
+            'R23': 'تغيرات جلدية أخرى',
+            'R25': 'حركات لا إرادية غير طبيعية',
+            'R26': 'اضطرابات المشي والحركة',
+            'R27': 'اضطرابات التنسيق الأخرى',
+            'R29': 'أعراض وعلامات أخرى للجهاز العصبي',
+            'R30': 'ألم عند التبول',
+            'R31': 'بيلة دموية غير محددة',
+            'R32': 'سلس البول غير محدد',
+            'R33': 'احتباس البول',
+            'R34': 'قلة البول',
+            'R35': 'كثرة التبول',
+            'R36': 'إفرازات من الإحليل',
+            'R39': 'أعراض وعلامات أخرى للجهاز البولي',
+            'R40': 'النعاس والغيبوبة',
+            'R41': 'أعراض وعلامات أخرى تتعلق بالإدراك',
+            'R42': 'الدوار',
+            'R43': 'اضطرابات الشم والذوق',
+            'R44': 'أعراض وعلامات أخرى تتعلق بالحس',
+            'R45': 'أعراض وعلامات تتعلق بالحالة النفسية',
+            'R46': 'أعراض وعلامات تتعلق بالمظهر',
+            'R47': 'اضطرابات النطق',
+            'R48': 'اضطرابات القراءة والكتابة',
+            'R49': 'اضطرابات الصوت',
+            'R50': 'حمى من أصل غير معروف',
+            'R51': 'صداع',
+            'R52': 'ألم غير محدد',
+            'R53': 'توعك وإرهاق',
+            'R54': 'شيخوخة',
+            'R55': 'إغماء',
+            'R56': 'اختلاجات غير محددة',
+            'R57': 'صدمة',
+            'R58': 'نزف غير محدد',
+            'R59': 'تضخم العقد اللمفية',
+            'R60': 'وذمة',
+            'R61': 'فرط التعرق',
+            'R62': 'تأخر النمو',
+            'R63': 'أعراض وعلامات متعلقة بالتغذية',
+            'R64': 'دنف',
+            'R68': 'أعراض وعلامات عامة أخرى',
+            'R69': 'مرض غير محدد',
+            'R70': 'ارتفاع سرعة الترسيب',
+            'R71': 'شذوذات خلايا الدم الحمراء',
+            'R72': 'شذوذات خلايا الدم البيضاء',
+            'R73': 'ارتفاع سكر الدم',
+            'R74': 'شذوذات إنزيمات المصل',
+            'R75': 'نتائج مخبرية لفيروس نقص المناعة',
+            'R76': 'نتائج مخبرية مناعية أخرى',
+            'R77': 'شذوذات البروتينات البلازمية',
+            'R78': 'وجود مواد غير طبيعية في الدم',
+            'R79': 'نتائج مخبرية كيميائية أخرى',
+            'R80': 'بيلة بروتينية معزولة',
+            'R81': 'بيلة سكرية',
+            'R82': 'نتائج بولية أخرى',
+            'R83': 'نتائج غير طبيعية في السائل الدماغي الشوكي',
+            'R84': 'نتائج غير طبيعية في إفرازات الجهاز التنفسي',
+            'R85': 'نتائج غير طبيعية في إفرازات الجهاز الهضمي',
+            'R86': 'نتائج غير طبيعية في إفرازات الأعضاء التناسلية',
+            'R87': 'نتائج غير طبيعية في إفرازات الجهاز البولي',
+            'R88': 'نتائج غير طبيعية في إفرازات أخرى',
+            'R89': 'نتائج غير طبيعية في عينات أخرى',
+            'R90': 'نتائج غير طبيعية في التصوير العصبي',
+            'R91': 'نتائج غير طبيعية في تصوير الصدر',
+            'R92': 'نتائج غير طبيعية في تصوير الثدي',
+            'R93': 'نتائج غير طبيعية في تصوير الأعضاء الأخرى',
+            'R94': 'نتائج غير طبيعية في الفحوصات الوظيفية',
+            'R95': 'متلازمة موت الرضع المفاجئ',
+            'R96': 'موت مفاجئ آخر',
+            'R98': 'موت بدون حضور',
+            'R99': 'أسباب الوفاة الأخرى',
+
+            // الإصابات والتسمم (S00-T98) - مختصرة
+            'S00': 'إصابة سطحية في الرأس',
+            'S01': 'جرح مفتوح في الرأس',
+            'S02': 'كسر في الجمجمة',
+            'S03': 'خلع في الرأس',
+            'S04': 'إصابة الأعصاب القحفية',
+            'S05': 'إصابة العين',
+            'S06': 'إصابة داخل الجمجمة',
+            'S07': 'إصابة سحق في الرأس',
+            'S08': 'بتر الرأس',
+            'S09': 'إصابات أخرى في الرأس',
+            'S10': 'إصابة سطحية في الرقبة',
+            'S11': 'جرح مفتوح في الرقبة',
+            'S12': 'كسر في الرقبة',
+            'S13': 'خلع في الرقبة',
+            'S14': 'إصابة الحبل الشوكي في الرقبة',
+            'S15': 'إصابة الأوعية الدموية في الرقبة',
+            'S16': 'إصابة العضلات والأوتار في الرقبة',
+            'S17': 'إصابة سحق في الرقبة',
+            'S18': 'بتر الرقبة',
+            'S19': 'إصابات أخرى في الرقبة',
+            'S20': 'إصابة سطحية في الصدر',
+            'S21': 'جرح مفتوح في الصدر',
+            'S22': 'كسر في الصدر',
+            'S23': 'خلع في الصدر',
+            'S24': 'إصابة الحبل الشوكي في الصدر',
+            'S25': 'إصابة الأوعية الدموية في الصدر',
+            'S26': 'إصابة القلب',
+            'S27': 'إصابة أعضاء الصدر الأخرى',
+            'S28': 'إصابة سحق في الصدر',
+            'S29': 'إصابات أخرى في الصدر',
+            'S30': 'إصابة سطحية في البطن',
+            'S31': 'جرح مفتوح في البطن',
+            'S32': 'كسر في البطن',
+            'S33': 'خلع في البطن',
+            'S34': 'إصابة الحبل الشوكي في البطن',
+            'S35': 'إصابة الأوعية الدموية في البطن',
+            'S36': 'إصابة أعضاء البطن',
+            'S37': 'إصابة أعضاء الحوض',
+            'S38': 'إصابة سحق في البطن',
+            'S39': 'إصابات أخرى في البطن',
+            'S40': 'إصابة سطحية في الكتف',
+            'S41': 'جرح مفتوح في الكتف',
+            'S42': 'كسر في الكتف',
+            'S43': 'خلع في الكتف',
+            'S44': 'إصابة الأعصاب في الكتف',
+            'S45': 'إصابة الأوعية الدموية في الكتف',
+            'S46': 'إصابة العضلات والأوتار في الكتف',
+            'S47': 'إصابة سحق في الكتف',
+            'S48': 'بتر الكتف',
+            'S49': 'إصابات أخرى في الكتف',
+            'S50': 'إصابة سطحية في الساعد',
+            'S51': 'جرح مفتوح في الساعد',
+            'S52': 'كسر في الساعد',
+            'S53': 'خلع في الساعد',
+            'S54': 'إصابة الأعصاب في الساعد',
+            'S55': 'إصابة الأوعية الدموية في الساعد',
+            'S56': 'إصابة العضلات والأوتار في الساعد',
+            'S57': 'إصابة سحق في الساعد',
+            'S58': 'بتر الساعد',
+            'S59': 'إصابات أخرى في الساعد',
+            'S60': 'إصابة سطحية في اليد',
+            'S61': 'جرح مفتوح في اليد',
+            'S62': 'كسر في اليد',
+            'S63': 'خلع في اليد',
+            'S64': 'إصابة الأعصاب في اليد',
+            'S65': 'إصابة الأوعية الدموية في اليد',
+            'S66': 'إصابة العضلات والأوتار في اليد',
+            'S67': 'إصابة سحق في اليد',
+            'S68': 'بتر اليد',
+            'S69': 'إصابات أخرى في اليد',
+            'S70': 'إصابة سطحية في الفخذ',
+            'S71': 'جرح مفتوح في الفخذ',
+            'S72': 'كسر في الفخذ',
+            'S73': 'خلع في الفخذ',
+            'S74': 'إصابة الأعصاب في الفخذ',
+            'S75': 'إصابة الأوعية الدموية في الفخذ',
+            'S76': 'إصابة العضلات والأوتار في الفخذ',
+            'S77': 'إصابة سحق في الفخذ',
+            'S78': 'بتر الفخذ',
+            'S79': 'إصابات أخرى في الفخذ',
+            'S80': 'إصابة سطحية في الساق',
+            'S81': 'جرح مفتوح في الساق',
+            'S82': 'كسر في الساق',
+            'S83': 'خلع في الساق',
+            'S84': 'إصابة الأعصاب في الساق',
+            'S85': 'إصابة الأوعية الدموية في الساق',
+            'S86': 'إصابة العضلات والأوتار في الساق',
+            'S87': 'إصابة سحق في الساق',
+            'S88': 'بتر الساق',
+            'S89': 'إصابات أخرى في الساق',
+            'S90': 'إصابة سطحية في القدم',
+            'S91': 'جرح مفتوح في القدم',
+            'S92': 'كسر في القدم',
+            'S93': 'خلع في القدم',
+            'S94': 'إصابة الأعصاب في القدم',
+            'S95': 'إصابة الأوعية الدموية في القدم',
+            'S96': 'إصابة العضلات والأوتار في القدم',
+            'S97': 'إصابة سحق في القدم',
+            'S98': 'بتر القدم',
+            'S99': 'إصابات أخرى في القدم',
+            'T00': 'إصابات سطحية متعددة',
+            'T01': 'جروح مفتوحة متعددة',
+            'T02': 'كسور متعددة',
+            'T03': 'خلوع متعددة',
+            'T04': 'إصابات سحق متعددة',
+            'T05': 'بتر متعدد',
+            'T06': 'إصابات أخرى متعددة',
+            'T07': 'إصابات متعددة غير محددة',
+            'T08': 'كسر في العمود الفقري',
+            'T09': 'إصابات أخرى في العمود الفقري',
+            'T10': 'كسر في الجذع',
+            'T11': 'إصابات أخرى في الجذع',
+            'T12': 'كسر في الأطراف',
+            'T13': 'إصابات أخرى في الأطراف',
+            'T14': 'إصابة في منطقة غير محددة',
+            'T15': 'جسم غريب في العين',
+            'T16': 'جسم غريب في الأذن',
+            'T17': 'جسم غريب في الجهاز التنفسي',
+            'T18': 'جسم غريب في الجهاز الهضمي',
+            'T19': 'جسم غريب في الجهاز التناسلي',
+            'T20': 'حرق في الرأس والرقبة',
+            'T21': 'حرق في الجذع',
+            'T22': 'حرق في الكتف والذراع',
+            'T23': 'حرق في اليد',
+            'T24': 'حرق في الفخذ والساق',
+            'T25': 'حرق في القدم',
+            'T26': 'حرق في العين',
+            'T27': 'حرق في الجهاز التنفسي',
+            'T28': 'حرق في الأعضاء الداخلية',
+            'T29': 'حرق متعدد',
+            'T30': 'حرق غير محدد',
+            'T31': 'حرق حسب النسبة المئوية',
+            'T32': 'حرق حسب النسبة المئوية',
+            'T33': 'قضمة الصقيع',
+            'T34': 'قضمة الصقيع',
+            'T35': 'قضمة الصقيع متعددة',
+            'T36': 'تسمم بالمضادات الحيوية',
+            'T37': 'تسمم بأدوية مضادة للجراثيم',
+            'T38': 'تسمم بالهرمونات',
+            'T39': 'تسمم بالمسكنات',
+            'T40': 'تسمم بالمخدرات',
+            'T41': 'تسمم بالتخدير',
+            'T42': 'تسمم بالأدوية المضادة للصرع',
+            'T43': 'تسمم بالأدوية النفسية',
+            'T44': 'تسمم بأدوية الجهاز العصبي',
+            'T45': 'تسمم بأدوية أخرى',
+            'T46': 'تسمم بأدوية القلب والأوعية',
+            'T47': 'تسمم بأدوية الجهاز الهضمي',
+            'T48': 'تسمم بأدوية الجهاز التنفسي',
+            'T49': 'تسمم بأدوية الجلد',
+            'T50': 'تسمم بأدوية أخرى',
+            'T51': 'تسمم بالكحول',
+            'T52': 'تسمم بالمذيبات العضوية',
+            'T53': 'تسمم بمركبات الهالوجين',
+            'T54': 'تسمم بالمواد المسببة للتآكل',
+            'T55': 'تسمم بالمنظفات',
+            'T56': 'تسمم بالمعادن',
+            'T57': 'تسمم بمواد غير معدنية',
+            'T58': 'تسمم بأول أكسيد الكربون',
+            'T59': 'تسمم بالغازات',
+            'T60': 'تسمم بالمبيدات',
+            'T61': 'تسمم بالأسماك',
+            'T62': 'تسمم بالأطعمة الأخرى',
+            'T63': 'تسمم بالسموم الحيوانية',
+            'T64': 'تسمم بالإندوكسين',
+            'T65': 'تسمم بمواد أخرى',
+            'T66': 'آثار الإشعاع',
+            'T67': 'آثار الحرارة والضوء',
+            'T68': 'انخفاض الحرارة',
+            'T69': 'آثار البرد الأخرى',
+            'T70': 'آثار ضغط الهواء والماء',
+            'T71': 'اختناق',
+            'T73': 'آثار الحرمان',
+            'T74': 'إساءة المعاملة',
+            'T75': 'آثار أسباب خارجية أخرى',
+            'T76': 'إساءة المعاملة غير محددة',
+            'T78': 'آثار ضارة غير محددة',
+            'T79': 'بعض المضاعفات المبكرة للرضح',
+            'T80': 'مضاعفات التسريب',
+            'T81': 'مضاعفات الإجراءات',
+            'T82': 'مضاعفات الأجهزة القلبية',
+            'T83': 'مضاعفات الأجهزة البولية',
+            'T84': 'مضاعفات الأجهزة العظمية',
+            'T85': 'مضاعفات الأجهزة الأخرى',
+            'T86': 'فشل ورفض الزرع',
+            'T87': 'مضاعفات البتر',
+            'T88': 'مضاعفات أخرى',
+            'T89': 'مضاعفات الرضح',
+            'T90': 'آثار إصابات الرأس',
+            'T91': 'آثار إصابات الرقبة والجذع',
+            'T92': 'آثار إصابات الأطراف العلوية',
+            'T93': 'آثار إصابات الأطراف السفلية',
+            'T94': 'آثار إصابات متعددة',
+            'T95': 'آثار الحروق',
+            'T96': 'آثار التسمم',
+            'T97': 'آثار أسباب خارجية أخرى',
+            'T98': 'آثار أخرى'
+        };
+
+        // ============================================================
+        // البيانات الأساسية
+        // ============================================================
+        var PROVINCES = ['بغداد', 'البصرة', 'نينوى', 'أربيل', 'النجف', 'كربلاء', 'دهوك', 'الأنبار', 'بابل', 'القادسية', 'ديالى', 'ذي قار', 'ميسان', 'واسط', 'صلاح الدين', 'كركوك', 'السليمانية', 'المثنى'];
+
+        var DEFAULT_DATA = [
+            { medical_record: 1001, patient_name: 'أحمد علي حسن', mother_name: 'فاطمة', national_id: '123456789', gender: 'ذكر', marital_status: 'متزوج', nationality: 'عراقي', age_days: 0, age_months: 0, age_years: 45, profession: 'طبيب', education: 'بكالوريوس', previous_admissions: 2, admission_date: '2026-05-01', discharge_date: '2026-05-10', chronic_disease: 'سكري', weight: 80, smoker: 'كلا', diagnosis: 'E11', diagnosis_arabic: 'داء السكري من النوع الثاني', province: 'بغداد', district: 'الكرخ', neighborhood: 'المنصور', hospital: 'مستشفى الكندي', doctor_name: 'د. خالد', status: 'خروج بتحسن', department: 'الباطنية', attachment: null },
+            { medical_record: 1002, patient_name: 'سارة محمد حسين', mother_name: 'زينب', national_id: '987654321', gender: 'أنثى', marital_status: 'أعزب', nationality: 'عراقي', age_days: 0, age_months: 0, age_years: 28, profession: 'مهندس', education: 'ماجستير', previous_admissions: 0, admission_date: '2026-05-05', discharge_date: '2026-05-15', chronic_disease: 'لايوجد', weight: 65, smoker: 'نعم', diagnosis: 'J45', diagnosis_arabic: 'الربو', province: 'البصرة', district: 'البصرة القديمة', neighborhood: 'الزبير', hospital: 'مستشفى اليرموك', doctor_name: 'د. سعاد', status: 'راقد', department: 'العناية المركزة', attachment: null },
+            { medical_record: 1003, patient_name: 'محمود عبد الله', mother_name: 'خديجة', national_id: '555555555', gender: 'ذكر', marital_status: 'مطلق', nationality: 'سوري', age_days: 0, age_months: 0, age_years: 55, profession: 'عامل', education: 'ابتدائية', previous_admissions: 5, admission_date: '2026-05-10', discharge_date: null, chronic_disease: 'ضغط الدم', weight: 95, smoker: 'نعم', diagnosis: 'I10', diagnosis_arabic: 'ارتفاع ضغط الدم الأساسي', province: 'نينوى', district: 'الموصل', neighborhood: 'الحمدانية', hospital: 'مستشفى الكاظمية', doctor_name: 'د. حسان', status: 'راقد', department: 'الباطنية', attachment: null }
+        ];
+
+        // ============================================================
+        // المتغيرات العامة
+        // ============================================================
+        var patients = [];
+        var selectedId = null;
+        var attachFileObj = null;
+        var currentTab = 'causes';
+        var chartInstances = {};
+        var isHighlighted = false;
+        var tempScanData = null;
+
+        // ============================================================
+        // دوال مساعدة
+        // ============================================================
+        function getElement(id) { return document.getElementById(id); }
+        function today() { return new Date().toISOString().slice(0, 10); }
+
+        // ============================================================
+        // دوال الماسح
+        // ============================================================
+        function openScanner() {
+            getElement('scannerModal').classList.add('show');
+            getElement('scanPreviewArea').innerHTML = '<span class="placeholder">📄 حدد نوع الماسح واضغط "بدء المسح"</span>';
+            getElement('acceptScanBtn').style.display = 'none';
+            tempScanData = null;
+            getElement('scanFileName').value = '';
+        }
+
+        function closeScanner() {
+            getElement('scannerModal').classList.remove('show');
+            tempScanData = null;
+        }
+
+        function startScanner() {
+            try {
+                var scannerType = getElement('scannerType').value;
+                var format = getElement('scanFormat').value;
+                var fileName = getElement('scanFileName').value.trim();
+                var ext = format.split('/')[1] || 'jpg';
+                var defaultName = 'scan_' + Date.now() + '.' + ext;
+
+                var msg = '🔍 جاري تشغيل الماسح الضوئي...\n\n';
+                msg += 'نوع الماسح: ' + scannerType + '\n';
+                msg += 'الصيغة: ' + format + '\n';
+
+                if (!confirm(msg + '\n\n⚠️ نظراً لقيود المتصفح، سيتم فتح نافذة اختيار ملف.\n' +
+                    'يمكنك استخدام برنامج الماسح الضوئي المثبت على جهازك لحفظ الملف، ثم اختياره من هنا.')) {
+                    return;
+                }
+
+                var input = document.createElement('input');
+                input.type = 'file';
+                input.accept = format + ',' + format.split('/')[0] + '/*';
+                input.onchange = function (e) {
+                    var file = e.target.files[0];
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function (ev) {
+                            var preview = getElement('scanPreviewArea');
+                            var dataURL = ev.target.result;
+                            if (file.type === 'application/pdf') {
+                                preview.innerHTML = '<div style="padding:20px;"><span style="font-size:60px;">📄</span><br><span style="font-weight:600;">' + file.name + '</span><br><span style="font-size:13px;color:#555;">' + (file.size / 1024).toFixed(1) + ' كيلوبايت</span></div>';
+                            } else {
+                                preview.innerHTML = '<img src="' + dataURL + '" alt="صورة ممسوحة">';
+                            }
+                            tempScanData = {
+                                file: file,
+                                dataURL: dataURL,
+                                name: file.name,
+                                format: format,
+                                scanner: scannerType
+                            };
+                            getElement('acceptScanBtn').style.display = 'inline-block';
+                            alert('✅ تم اختيار الملف: ' + file.name + '\nاضغط "قبول" لإرفاقه مع المريض.');
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('❌ لم يتم اختيار أي ملف');
+                    }
+                };
+                input.click();
+            } catch (e) {
+                alert('خطأ في بدء المسح: ' + e.message);
+            }
+        }
+
+        function acceptScanFile() {
+            if (tempScanData) {
+                attachFileObj = tempScanData.file;
+                closeScanner();
+                alert('✅ تم إرفاق الملف بنجاح: ' + tempScanData.name + '\nاحفظ المريض لإرفاقه مع الملف.');
+                tempScanData = null;
+            } else {
+                alert('❌ لا يوجد ملف ممسوح لقبوله');
+            }
+        }
+
+        function resetScan() {
+            getElement('scanPreviewArea').innerHTML = '<span class="placeholder">📄 حدد نوع الماسح واضغط "بدء المسح"</span>';
+            getElement('acceptScanBtn').style.display = 'none';
+            tempScanData = null;
+            getElement('scanFileName').value = '';
+        }
+
+        // ============================================================
+        // دوال عرض المرفق
+        // ============================================================
+        function viewAttachment() {
+            try {
+                var p = patients.find(function (x) { return x.medical_record === selectedId; });
+                if (!p) { alert('الرجاء اختيار مريض أولاً'); return; }
+                if (!p.attachment) { alert('لا يوجد مرفق لهذا المريض'); return; }
+                var dataURL = p.attachment;
+                var mimeType = dataURL.split(',')[0].split(':')[1].split(';')[0];
+                var win = window.open('', '_blank');
+                if (!win) { alert('الرجاء السماح للنوافذ المنبثقة'); return; }
+                var html = '<html><head><meta charset="UTF-8"><title>المرفق - ' + p.patient_name + '</title>';
+                html += '<style>body{margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#f8f9fa;direction:rtl;font-family:Arial;} .container{max-width:95%;max-height:95%;background:white;border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,0.2);text-align:center;} .caption{color:#0d47a1;font-weight:bold;margin-top:10px;} .download-btn{display:inline-block;margin-top:15px;padding:8px 25px;background:#0d6efd;color:white;border-radius:30px;text-decoration:none;font-weight:600;}</style>';
+                html += '</head><body><div class="container">';
+                html += '<h3 style="color:#0d47a1;">المرفق - ' + p.patient_name + '</h3>';
+                if (mimeType === 'application/pdf') {
+                    html += '<embed src="' + dataURL + '" type="application/pdf" width="100%" height="500px" style="border-radius:8px;">';
+                } else if (mimeType.startsWith('image/')) {
+                    html += '<img src="' + dataURL + '" alt="المرفق" style="max-width:100%;max-height:70vh;border-radius:8px;">';
+                } else {
+                    html += '<p style="font-size:16px;color:#555;">📄 هذا الملف من نوع <strong>' + mimeType + '</strong></p>';
+                    html += '<p style="font-size:14px;color:#777;">لا يمكن عرضه مباشرة في المتصفح.</p>';
+                    html += '<a href="' + dataURL + '" download="' + p.medical_record + '_attachment" class="download-btn">📥 تحميل الملف</a>';
+                }
+                html += '<div class="caption">رقم السجل: ' + p.medical_record + ' | ' + p.hospital + '</div>';
+                html += '<a href="#" onclick="window.print();return false;" style="display:inline-block;margin-top:10px;padding:6px 20px;background:#6c757d;color:white;border-radius:30px;text-decoration:none;font-size:14px;">🖨️ طباعة</a>';
+                html += '</div></body></html>';
+                win.document.write(html);
+                win.document.close();
+            } catch (e) {
+                alert('خطأ في عرض المرفق: ' + e.message);
+            }
+        }
+
+        // ============================================================
+        // دوال إحصائيات الجنس والعمر
+        // ============================================================
+        function updateStats() {
+            var total = patients.length;
+            var diseases = new Set();
+            var active = 0;
+            var deceased = 0;
+            var years = {};
+            var hospitalsSet = new Set();
+            var maleCount = 0, femaleCount = 0, intersexCount = 0;
+            var childrenUnder5 = 0;
+
+            patients.forEach(function (p) {
+                if (p.diagnosis_arabic) diseases.add(p.diagnosis_arabic);
+                if (p.status === 'راقد') active++;
+                if (p.status === 'متوفي') deceased++;
+                if (p.hospital) hospitalsSet.add(p.hospital);
+                if (p.admission_date) {
+                    var year = p.admission_date.substring(0, 4);
+                    years[year] = (years[year] || 0) + 1;
+                }
+                if (p.gender === 'ذكر') maleCount++;
+                else if (p.gender === 'أنثى') femaleCount++;
+                else if (p.gender === 'خنثى') intersexCount++;
+                var ageYears = p.age_years || 0;
+                var ageMonths = p.age_months || 0;
+                var ageDays = p.age_days || 0;
+                if (ageYears < 5 || (ageYears === 5 && ageMonths === 0 && ageDays === 0)) {
+                    childrenUnder5++;
+                }
+            });
+
+            document.getElementById('totalPatients').textContent = total;
+            document.getElementById('totalDiseases').textContent = diseases.size;
+            document.getElementById('activePatients').textContent = active;
+            document.getElementById('deceasedPatients').textContent = deceased;
+            document.getElementById('totalHospitals').textContent = hospitalsSet.size;
+            document.getElementById('maleCount').textContent = maleCount;
+            document.getElementById('femaleCount').textContent = femaleCount;
+            document.getElementById('intersexCount').textContent = intersexCount;
+            document.getElementById('childrenUnder5').textContent = childrenUnder5;
+
+            var canvas = document.getElementById('yearChart');
+            if (!canvas) return;
+            if (typeof Chart === 'undefined') {
+                canvas.parentElement.innerHTML = '<p style="color:red;">Chart.js غير محملة</p>';
+                return;
+            }
+            if (chartInstances.yearChart) chartInstances.yearChart.destroy();
+            var labels = Object.keys(years).sort();
+            var data = labels.map(function (y) { return years[y]; });
+            var ctx = canvas.getContext('2d');
+            chartInstances.yearChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'عدد المرضى',
+                        data: data,
+                        backgroundColor: 'rgba(13,110,253,0.2)',
+                        borderColor: '#0d6efd',
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#0d6efd',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // دوال أساسية
+        // ============================================================
+        function getFormData() {
+            return {
+                medical_record: parseInt(getElement('f_medical_record').value) || null,
+                patient_name: getElement('f_patient_name').value.trim(),
+                mother_name: getElement('f_mother_name').value.trim(),
+                national_id: getElement('f_national_id').value.trim(),
+                gender: getElement('f_gender').value,
+                marital_status: getElement('f_marital_status').value,
+                nationality: getElement('f_nationality').value,
+                age_days: parseInt(getElement('f_age_days').value) || 0,
+                age_months: parseInt(getElement('f_age_months').value) || 0,
+                age_years: parseInt(getElement('f_age_years').value) || 0,
+                profession: getElement('f_profession').value,
+                education: getElement('f_education').value,
+                previous_admissions: parseInt(getElement('f_previous_admissions').value) || 0,
+                admission_date: getElement('f_admission_date').value,
+                discharge_date: getElement('f_discharge_date').value,
+                chronic_disease: getElement('f_chronic_disease').value,
+                weight: parseFloat(getElement('f_weight').value) || null,
+                smoker: getElement('f_smoker').value,
+                diagnosis: getElement('f_diagnosis').value,
+                diagnosis_arabic: getElement('f_diagnosis_arabic').value,
+                province: getElement('f_province').value,
+                district: getElement('f_district').value,
+                neighborhood: getElement('f_neighborhood').value.trim(),
+                hospital: getElement('f_hospital').value,
+                doctor_name: getElement('f_doctor_name').value.trim(),
+                status: getElement('f_status').value,
+                department: getElement('f_department').value,
+                attachment: null
+            };
+        }
+
+        function setFormData(p) {
+            getElement('f_medical_record').value = p.medical_record || '';
+            getElement('f_patient_name').value = p.patient_name || '';
+            getElement('f_mother_name').value = p.mother_name || '';
+            getElement('f_national_id').value = p.national_id || '';
+            getElement('f_gender').value = p.gender || '';
+            getElement('f_marital_status').value = p.marital_status || '';
+            getElement('f_nationality').value = p.nationality || '';
+            getElement('f_age_days').value = p.age_days || '';
+            getElement('f_age_months').value = p.age_months || '';
+            getElement('f_age_years').value = p.age_years || '';
+            getElement('f_profession').value = p.profession || '';
+            getElement('f_education').value = p.education || '';
+            getElement('f_previous_admissions').value = p.previous_admissions || '';
+            getElement('f_admission_date').value = p.admission_date || '';
+            getElement('f_discharge_date').value = p.discharge_date || '';
+            getElement('f_chronic_disease').value = p.chronic_disease || 'لايوجد';
+            getElement('f_weight').value = p.weight || '';
+            getElement('f_smoker').value = p.smoker || '';
+            getElement('f_diagnosis').value = p.diagnosis || '';
+            updateDiagnosisArabic();
+            getElement('f_province').value = p.province || '';
+            updateDistricts();
+            getElement('f_district').value = p.district || '';
+            getElement('f_neighborhood').value = p.neighborhood || '';
+            getElement('f_hospital').value = p.hospital || '';
+            getElement('f_doctor_name').value = p.doctor_name || '';
+            getElement('f_status').value = p.status || '';
+            getElement('f_department').value = p.department || '';
+            selectedId = p.medical_record || null;
+            isHighlighted = false;
+        }
+
+        function clearForm() {
+            getElement('f_medical_record').value = '';
+            getElement('f_patient_name').value = '';
+            getElement('f_mother_name').value = '';
+            getElement('f_national_id').value = '';
+            getElement('f_gender').value = '';
+            getElement('f_marital_status').value = '';
+            getElement('f_nationality').value = '';
+            getElement('f_age_days').value = '';
+            getElement('f_age_months').value = '';
+            getElement('f_age_years').value = '';
+            getElement('f_profession').value = '';
+            getElement('f_education').value = '';
+            getElement('f_previous_admissions').value = '';
+            getElement('f_admission_date').value = today();
+            getElement('f_discharge_date').value = '';
+            getElement('f_chronic_disease').value = 'لايوجد';
+            getElement('f_weight').value = '';
+            getElement('f_smoker').value = '';
+            getElement('f_diagnosis').value = '';
+            getElement('f_diagnosis_arabic').value = '';
+            getElement('f_province').value = '';
+            getElement('f_district').value = '';
+            getElement('f_neighborhood').value = '';
+            getElement('f_hospital').value = '';
+            getElement('f_doctor_name').value = '';
+            getElement('f_status').value = '';
+            getElement('f_department').value = '';
+            selectedId = null;
+            attachFileObj = null;
+            isHighlighted = false;
+        }
+
+        function updateDiagnosisArabic() {
+            var code = getElement('f_diagnosis').value;
+            getElement('f_diagnosis_arabic').value = ICD_CODES[code] || '';
+        }
+
+        function updateDistricts() {
+            var prov = getElement('f_province').value;
+            var sel = getElement('f_district');
+            sel.innerHTML = '<option value="">--</option>';
+            var list = DISTRICTS_FULL[prov] || [];
+            list.forEach(function (d) {
+                var opt = document.createElement('option');
+                opt.value = d;
+                opt.text = d;
+                sel.appendChild(opt);
+            });
+        }
+
+        function populateSelects() {
+            var provSel = getElement('f_province');
+            provSel.innerHTML = '<option value="">--</option>';
+            Object.keys(DISTRICTS_FULL).sort().forEach(function (p) {
+                var opt = document.createElement('option');
+                opt.value = p;
+                opt.text = p;
+                provSel.appendChild(opt);
+            });
+            var hospSel = getElement('f_hospital');
+            hospSel.innerHTML = '<option value="">--</option>';
+            HOSPITALS.forEach(function (h) {
+                var opt = document.createElement('option');
+                opt.value = h;
+                opt.text = h;
+                hospSel.appendChild(opt);
+            });
+            var icdSel = getElement('f_diagnosis');
+            icdSel.innerHTML = '<option value="">--</option>';
+            var sortedCodes = Object.keys(ICD_CODES).sort();
+            sortedCodes.forEach(function (code) {
+                var opt = document.createElement('option');
+                opt.value = code;
+                opt.text = code + ' - ' + ICD_CODES[code];
+                icdSel.appendChild(opt);
+            });
+        }
+
+        function getAgeString(p) {
+            var parts = [];
+            if (p.age_years) parts.push(p.age_years + ' سنة');
+            if (p.age_months) parts.push(p.age_months + ' شهر');
+            if (p.age_days) parts.push(p.age_days + ' يوم');
+            return parts.join(' ') || 'غير محدد';
+        }
+
+        function getAttachmentIcon(p) {
+            if (p && p.attachment) {
+                return '<span class="at"><span class="bk b1"></span><span class="bk b2"></span></span>';
+            }
+            return '-';
+        }
+
+        function loadData() {
+            try {
+                var raw = localStorage.getItem('patients_db');
+                if (raw) {
+                    var parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        patients = parsed;
+                        updateStats();
+                        return;
+                    }
+                }
+                patients = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                saveData();
+            } catch (e) {
+                patients = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                saveData();
+            }
+            updateStats();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('patients_db', JSON.stringify(patients));
+                updateStats();
+            } catch (e) { }
+        }
+
+        function renderTable() {
+            var tbody = getElement('tableBody');
+            if (patients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:20px;">لا توجد سجلات</td></tr>';
+                return;
+            }
+            var html = '';
+            patients.forEach(function (p, idx) {
+                var hl = (p.medical_record === selectedId && isHighlighted) ? ' class="hl"' : '';
+                html += '<tr' + hl + ' onclick="selectPatient(' + idx + ')">';
+                html += '<td>' + getAttachmentIcon(p) + '</td>';
+                html += '<td>' + p.medical_record + '</td>';
+                html += '<td>' + p.patient_name + '</td>';
+                html += '<td>' + p.mother_name + '</td>';
+                html += '<td>' + p.national_id + '</td>';
+                html += '<td>' + p.gender + '</td>';
+                html += '<td>' + p.admission_date + '</td>';
+                html += '<td>' + (p.discharge_date || 'لم يخرج') + '</td>';
+                html += '<td>' + p.hospital + '</td>';
+                html += '<td>' + p.doctor_name + '</td>';
+                html += '<td>' + p.diagnosis + '</td>';
+                html += '<td>' + p.diagnosis_arabic + '</td>';
+                html += '<td>' + p.department + '</td>';
+                html += '<td>' + p.status + '</td>';
+                html += '</tr>';
+                if (idx < patients.length - 1) {
+                    html += '<tr class="sep"><td colspan="14"><div class="sep-line"></div></td></tr>';
+                }
+            });
+            tbody.innerHTML = html;
+        }
+
+        function selectPatient(idx) {
+            var p = patients[idx];
+            if (!p) return;
+            setFormData(p);
+            isHighlighted = true;
+            renderTable();
+        }
+
+        function newRecord() {
+            if (getElement('f_patient_name').value || getElement('f_national_id').value) {
+                if (!confirm('هل تريد بدء إدخال جديد؟ سيتم مسح البيانات الحالية.')) return;
+            }
+            clearForm();
+            isHighlighted = false;
+            getElement('f_admission_date').value = today();
+            renderTable();
+        }
+
+        function validateForm() {
+            var f = getFormData();
+            if (!f.medical_record) { alert('رقم السجل الطبي مطلوب'); return false; }
+            if (!f.patient_name) { alert('اسم المريض مطلوب'); return false; }
+            if (!f.mother_name) { alert('اسم الأم مطلوب'); return false; }
+            if (!f.national_id) { alert('رقم البطاقة الوطنية مطلوب'); return false; }
+            if (!f.admission_date) { alert('تاريخ الدخول مطلوب'); return false; }
+            if (!f.diagnosis) { alert('رمز التشخيص مطلوب'); return false; }
+            if (!f.diagnosis_arabic) { alert('التشخيص بالعربي مطلوب'); return false; }
+            if (!f.status) { alert('حالة المريض مطلوبة'); return false; }
+            if (!f.department) { alert('الردهة مطلوبة'); return false; }
+            if (!f.hospital) { alert('المستشفى مطلوب'); return false; }
+            if (!f.doctor_name) { alert('اسم الطبيب مطلوب'); return false; }
+            if (f.age_days === 0 && f.age_months === 0 && f.age_years === 0) {
+                alert('يرجى إدخال العمر'); return false;
+            }
+            if (f.discharge_date && new Date(f.discharge_date) < new Date(f.admission_date)) {
+                alert('تاريخ الخروج لا يمكن أن يكون قبل تاريخ الدخول'); return false;
+            }
+            return true;
+        }
+
+        function saveRecord() {
+            try {
+                if (!validateForm()) return;
+                var newPatient = getFormData();
+                var exists = patients.find(function (p) { return p.medical_record === newPatient.medical_record; });
+                if (exists && exists.medical_record !== selectedId) {
+                    alert('رقم السجل الطبي مسجل مسبقاً!');
+                    return;
+                }
+                if (attachFileObj) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        newPatient.attachment = e.target.result;
+                        saveFinal(newPatient);
+                    };
+                    reader.readAsDataURL(attachFileObj);
+                } else {
+                    saveFinal(newPatient);
+                }
+            } catch (e) {
+                alert('خطأ في الحفظ: ' + e.message);
+            }
+        }
+
+        function saveFinal(p) {
+            try {
+                if (selectedId) {
+                    var idx = patients.findIndex(function (x) { return x.medical_record === p.medical_record; });
+                    if (idx !== -1) patients[idx] = p;
+                    else patients.push(p);
+                } else {
+                    patients.push(p);
+                }
+                saveData();
+                isHighlighted = false;
+                renderTable();
+                clearForm();
+                attachFileObj = null;
+                alert('تم حفظ البيانات بنجاح');
+            } catch (e) {
+                alert('خطأ في حفظ البيانات: ' + e.message);
+            }
+        }
+
+        function deleteRecord() {
+            try {
+                if (!selectedId) { alert('يرجى اختيار مريض أولاً'); return; }
+                if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
+                patients = patients.filter(function (p) { return p.medical_record !== selectedId; });
+                saveData();
+                isHighlighted = false;
+                renderTable();
+                clearForm();
+                alert('تم الحذف بنجاح');
+            } catch (e) {
+                alert('خطأ في الحذف: ' + e.message);
+            }
+        }
+
+        function updateRecord() {
+            if (!selectedId) { alert('يرجى اختيار مريض للتعديل'); return; }
+            saveRecord();
+        }
+
+        function openSearch() {
+            getElement('searchModal').classList.add('show');
+            getElement('searchQuery').value = '';
+        }
+
+        function closeSearch() {
+            getElement('searchModal').classList.remove('show');
+        }
+
+        function doSearch() {
+            try {
+                var q = getElement('searchQuery').value.trim().toLowerCase();
+                if (!q) { alert('يرجى إدخال قيمة البحث'); return; }
+                var type = getElement('searchType').value;
+                var found = null;
+                for (var i = 0; i < patients.length; i++) {
+                    var p = patients[i];
+                    var match = false;
+                    if (type === 'all') {
+                        var fields = ['medical_record', 'patient_name', 'mother_name', 'national_id'];
+                        for (var j = 0; j < fields.length; j++) {
+                            var val = p[fields[j]];
+                            if (val !== undefined && val !== null) {
+                                if (val.toString().toLowerCase().includes(q)) { match = true; break; }
+                            }
+                        }
+                    } else {
+                        var val2 = p[type];
+                        if (val2 !== undefined && val2 !== null) {
+                            if (val2.toString().toLowerCase().includes(q)) { match = true; }
+                        }
+                    }
+                    if (match) { found = p; break; }
+                }
+                if (found) {
+                    setFormData(found);
+                    isHighlighted = true;
+                    renderTable();
+                    closeSearch();
+                    alert('✅ تم العثور على المريض: ' + found.patient_name);
+                    setTimeout(function () {
+                        var rows = document.querySelectorAll('.tbl tbody tr');
+                        rows.forEach(function (row) {
+                            if (row.classList.contains('hl')) {
+                                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        });
+                    }, 200);
+                } else {
+                    alert('❌ لم يتم العثور على مريض مطابق');
+                }
+            } catch (e) {
+                alert('خطأ في البحث: ' + e.message);
+            }
+        }
+
+        function clearSearch() {
+            selectedId = null;
+            isHighlighted = false;
+            clearForm();
+            renderTable();
+            closeSearch();
+        }
+
+        // ============================================================
+        // دالة إلغاء التضليل (تمت إضافتها)
+        // ============================================================
+        function clearHighlight() {
+            selectedId = null;
+            isHighlighted = false;
+            clearForm();
+            renderTable();
+            alert('تم إلغاء التضليل وتفريغ النموذج.');
+        }
+
+        // ============================================================
+        // دوال الطباعة والتقارير
+        // ============================================================
+        function printReport() {
+            try {
+                var p = patients.find(function (x) { return x.medical_record === selectedId; });
+                if (!p) { alert('لا توجد بيانات مريض للطباعة'); return; }
+                var win = window.open('', '_blank');
+                if (!win) { alert('الرجاء السماح للنوافذ المنبثقة'); return; }
+                var html = '<html dir="rtl"><head><meta charset="UTF-8"><title>تقرير طبي</title>';
+                html += '<style>body{font-family:Arial;margin:25px;} .hdr{background:#0d47a1;color:#fff;padding:12px;text-align:center;border-radius:8px;} .sec{border:1px solid #ddd;padding:12px;margin:12px 0;border-radius:6px;} .rw{display:flex;padding:4px;border-bottom:1px solid #eee;} .lb{font-weight:bold;width:180px;}</style>';
+                html += '</head><body>';
+                html += '<div class="hdr"><h2>' + p.hospital + '</h2><h3>التقرير الطبي للمريض</h3></div>';
+                html += '<div class="sec"><h4>معلومات المريض</h4>';
+                html += '<div class="rw"><span class="lb">رقم السجل:</span><span>' + p.medical_record + '</span></div>';
+                html += '<div class="rw"><span class="lb">الاسم:</span><span>' + p.patient_name + '</span></div>';
+                html += '<div class="rw"><span class="lb">اسم الأم:</span><span>' + p.mother_name + '</span></div>';
+                html += '<div class="rw"><span class="lb">رقم البطاقة:</span><span>' + p.national_id + '</span></div>';
+                html += '<div class="rw"><span class="lb">الجنس:</span><span>' + p.gender + '</span></div>';
+                html += '<div class="rw"><span class="lb">العمر:</span><span>' + getAgeString(p) + '</span></div>';
+                html += '<div class="rw"><span class="lb">المحافظة:</span><span>' + p.province + '</span></div>';
+                html += '<div class="rw"><span class="lb">القضاء:</span><span>' + p.district + '</span></div>';
+                html += '</div>';
+                html += '<div class="sec"><h4>المعلومات الطبية</h4>';
+                html += '<div class="rw"><span class="lb">تاريخ الدخول:</span><span>' + p.admission_date + '</span></div>';
+                html += '<div class="rw"><span class="lb">تاريخ الخروج:</span><span>' + (p.discharge_date || 'لم يخرج') + '</span></div>';
+                html += '<div class="rw"><span class="lb">التشخيص:</span><span>' + p.diagnosis + ' - ' + p.diagnosis_arabic + '</span></div>';
+                html += '<div class="rw"><span class="lb">حالة الخروج:</span><span>' + p.status + '</span></div>';
+                html += '<div class="rw"><span class="lb">الردهة:</span><span>' + p.department + '</span></div>';
+                html += '<div class="rw"><span class="lb">المستشفى:</span><span>' + p.hospital + '</span></div>';
+                html += '<div class="rw"><span class="lb">الطبيب:</span><span>' + p.doctor_name + '</span></div>';
+                html += '</div>';
+                html += '<div style="margin-top:20px;border-top:1px solid #ddd;padding-top:12px;display:flex;justify-content:space-between;">';
+                html += '<div>تاريخ الطباعة: ' + new Date().toLocaleDateString('ar-EG') + '</div>';
+                html += '<div>توقيع الطبيب: ' + p.doctor_name + '</div>';
+                html += '</div></body></html>';
+                win.document.write(html);
+                win.document.close();
+                win.print();
+            } catch (e) {
+                alert('خطأ في الطباعة: ' + e.message);
+            }
+        }
+
+        function printCauses() {
+            try {
+                var total = patients.length;
+                if (total === 0) { alert('لا توجد بيانات'); return; }
+                var counts = {};
+                patients.forEach(function (p) {
+                    var key = p.diagnosis_arabic || 'غير محدد';
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+                var sorted = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10);
+                var html = '<html dir="rtl"><head><meta charset="UTF-8"><title>أكثر 10 أسباب مرضية</title>';
+                html += '<style>body{font-family:Arial;margin:25px;} h2{color:#0d47a1;} table{width:100%;border-collapse:collapse;margin:12px 0;} th,td{border:1px solid #ddd;padding:6px;text-align:center;} th{background:#0d47a1;color:white;}</style>';
+                html += '</head><body>';
+                html += '<h2>أكثر 10 أسباب مرضية شيوعاً</h2>';
+                html += '<p><strong>إجمالي المرضى:</strong> ' + total + '</p>';
+                html += '<table><thead><tr><th>#</th><th>التشخيص</th><th>عدد الحالات</th><th>النسبة المئوية</th></tr></thead><tbody>';
+                sorted.forEach(function (item, idx) {
+                    var pct = ((item[1] / total) * 100).toFixed(1);
+                    html += '<tr><td>' + (idx + 1) + '</td><td>' + item[0] + '</td><td>' + item[1] + '</td><td>' + pct + '%</td></tr>';
+                });
+                html += '</tbody></table>';
+                html += '<p style="margin-top:15px;">تاريخ الطباعة: ' + new Date().toLocaleDateString('ar-EG') + '</p>';
+                html += '</body></html>';
+                var win = window.open('', '_blank');
+                if (!win) { alert('الرجاء السماح للنوافذ المنبثقة'); return; }
+                win.document.write(html);
+                win.document.close();
+                win.print();
+            } catch (e) {
+                alert('خطأ في طباعة الأسباب: ' + e.message);
+            }
+        }
+
+        function attachFile() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = function (e) {
+                var file = e.target.files[0];
+                if (file) {
+                    attachFileObj = file;
+                    alert('تم رفع الملف: ' + file.name);
+                }
+            };
+            input.click();
+        }
+
+        function backupData() {
+            try {
+                var data = JSON.stringify(patients);
+                var blob = new Blob([data], { type: 'application/json' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'backup_' + new Date().toISOString().slice(0, 10) + '.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('تم تصدير النسخة الاحتياطية');
+            } catch (e) {
+                alert('خطأ في النسخ الاحتياطي: ' + e.message);
+            }
+        }
+
+        function restoreData() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function (e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    try {
+                        var data = JSON.parse(ev.target.result);
+                        if (Array.isArray(data)) {
+                            patients = data;
+                            saveData();
+                            renderTable();
+                            alert('تم استعادة البيانات بنجاح');
+                        } else {
+                            alert('ملف غير صالح');
+                        }
+                    } catch (err) {
+                        alert('خطأ في قراءة الملف');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        async function exportExcel() {
+            try {
+                if (patients.length === 0) {
+                    alert('لا توجد بيانات للتصدير');
+                    return;
+                }
+                var headers = ['رقم السجل', 'اسم المريض', 'اسم الأم', 'رقم البطاقة', 'الجنس', 'الحالة الاجتماعية', 'الجنسية',
+                    'العمر', 'المهنة', 'التحصيل', 'تاريخ الدخول', 'تاريخ الخروج', 'أمراض مزمنة', 'الوزن',
+                    'مدخن', 'رمز ICD', 'التشخيص', 'المحافظة', 'القضاء', 'الحي', 'حالة الخروج', 'الردهة',
+                    'المستشفى', 'الطبيب', 'رقودات سابقة'];
+                var csv = headers.join(',') + '\n';
+                patients.forEach(function (p) {
+                    var row = [
+                        p.medical_record,
+                        '"' + (p.patient_name || '') + '"',
+                        '"' + (p.mother_name || '') + '"',
+                        '"' + (p.national_id || '') + '"',
+                        '"' + (p.gender || '') + '"',
+                        '"' + (p.marital_status || '') + '"',
+                        '"' + (p.nationality || '') + '"',
+                        p.age_years + ' سنة ' + p.age_months + ' شهر ' + p.age_days + ' يوم',
+                        '"' + (p.profession || '') + '"',
+                        '"' + (p.education || '') + '"',
+                        p.admission_date || '',
+                        p.discharge_date || '',
+                        '"' + (p.chronic_disease || '') + '"',
+                        p.weight || '',
+                        '"' + (p.smoker || '') + '"',
+                        '"' + (p.diagnosis || '') + '"',
+                        '"' + (p.diagnosis_arabic || '') + '"',
+                        '"' + (p.province || '') + '"',
+                        '"' + (p.district || '') + '"',
+                        '"' + (p.neighborhood || '') + '"',
+                        '"' + (p.status || '') + '"',
+                        '"' + (p.department || '') + '"',
+                        '"' + (p.hospital || '') + '"',
+                        '"' + (p.doctor_name || '') + '"',
+                        p.previous_admissions || 0
+                    ];
+                    csv += row.join(',') + '\n';
+                });
+
+                var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+
+                if ('showSaveFilePicker' in window) {
+                    try {
+                        var handle = await window.showSaveFilePicker({
+                            suggestedName: 'patients_export.csv',
+                            types: [{ description: 'CSV file', accept: { 'text/csv': ['.csv'] } }]
+                        });
+                        var writable = await handle.createWritable();
+                        await writable.write(blob);
+                        await writable.close();
+                        alert('تم حفظ الملف بنجاح في الموقع المختار');
+                        return;
+                    } catch (err) {
+                        if (err.name === 'AbortError' || err.message.includes('abort')) return;
+                        console.warn('showSaveFilePicker failed, using fallback', err);
+                    }
+                }
+
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'patients_export.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function () { URL.revokeObjectURL(url); }, 100);
+                alert('تم تصدير البيانات كملف CSV (تم حفظه في مجلد التنزيلات الافتراضي)');
+            } catch (e) {
+                alert('خطأ في التصدير: ' + e.message);
+            }
+        }
+
+        function exitApp() {
+            if (confirm('هل تريد الخروج؟')) window.close();
+        }
+
+        function showDashboard(tab) {
+            var dash = getElement('dashboard');
+            dash.classList.add('show');
+            switchTab(tab);
+            setTimeout(function () {
+                dash.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 150);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            var btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(function (b) {
+                b.classList.remove('active');
+                if (b.dataset.tab === tab) b.classList.add('active');
+            });
+            var content = getElement('tabContent');
+            if (tab === 'causes') {
+                content.innerHTML = renderCausesTab();
+                setTimeout(renderCausesChart, 100);
+            } else if (tab === 'report') {
+                content.innerHTML = renderReportTab();
+            } else if (tab === 'charts') {
+                content.innerHTML = renderChartsTab();
+                setTimeout(renderAllCharts, 100);
+            }
+        }
+
+        function renderCausesTab() {
+            var counts = {};
+            patients.forEach(function (p) {
+                var key = p.diagnosis_arabic || 'غير محدد';
+                counts[key] = (counts[key] || 0) + 1;
+            });
+            var sorted = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10);
+            var html = '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">';
+            html += '<h4 style="color:#0d47a1;">أكثر 10 أسباب مرضية</h4>';
+            html += '<button class="prt" onclick="printCauses()">🖨️ طباعة</button>';
+            html += '</div>';
+            html += '<div style="display:flex; flex-wrap:wrap; gap:15px; margin-top:10px;">';
+            html += '<div style="flex:1; min-width:250px;"><canvas id="causesChart" style="max-height:230px; width:100%;"></canvas></div>';
+            html += '<div style="flex:1; min-width:200px; background:#fff; border-radius:10px; padding:10px; border:1px solid #ddd; max-height:300px; overflow-y:auto;">';
+            html += '<table style="width:100%; font-size:13px;"><thead><tr><th>#</th><th>التشخيص</th><th>عدد</th></tr></thead><tbody>';
+            sorted.forEach(function (item, idx) {
+                html += '<tr><td>' + (idx + 1) + '</td><td>' + item[0] + '</td><td>' + item[1] + '</td></tr>';
+            });
+            if (sorted.length === 0) html += '<tr><td colspan="3" style="text-align:center;">لا توجد بيانات</td></tr>';
+            html += '</tbody></table></div></div>';
+            return html;
+        }
+
+        function renderReportTab() {
+            var p = patients.find(function (x) { return x.medical_record === selectedId; });
+            if (!p) {
+                return '<div class="alert-box">⚠️ الرجاء اختيار مريض من الجدول</div>';
+            }
+            var html = '<div class="rbox">';
+            html += '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">';
+            html += '<h3 style="color:#0d47a1;">' + p.patient_name + '</h3>';
+            html += '<button class="btn btn-s" onclick="printReport()">🖨️ طباعة</button>';
+            html += '</div><hr>';
+            html += '<div class="row">';
+            var fields = [
+                ['رقم السجل', p.medical_record],
+                ['اسم الأم', p.mother_name],
+                ['رقم البطاقة', p.national_id],
+                ['الجنس', p.gender],
+                ['الجنسية', p.nationality],
+                ['العمر', getAgeString(p)],
+                ['المهنة', p.profession],
+                ['التحصيل', p.education],
+                ['المحافظة', p.province],
+                ['القضاء', p.district],
+                ['الحي', p.neighborhood || '-'],
+                ['تاريخ الدخول', p.admission_date],
+                ['تاريخ الخروج', p.discharge_date || 'لم يخرج'],
+                ['الأمراض المزمنة', p.chronic_disease],
+                ['الوزن', p.weight ? p.weight + ' كغم' : '-'],
+                ['مدخن', p.smoker || '-'],
+                ['رمز ICD', p.diagnosis],
+                ['التشخيص', p.diagnosis_arabic],
+                ['حالة الخروج', p.status],
+                ['الردهة', p.department],
+                ['المستشفى', p.hospital],
+                ['الطبيب', p.doctor_name],
+                ['رقودات سابقة', p.previous_admissions || 0]
+            ];
+            fields.forEach(function (f) {
+                html += '<div class="col"><label>' + f[0] + '</label><span>' + (f[1] !== undefined && f[1] !== null ? f[1] : '-') + '</span></div>';
+            });
+            html += '</div>';
+            if (p.attachment) {
+                html += '<div style="margin-top:10px;"><strong>المرفق:</strong> <a href="#" onclick="viewAttachment(); return false;">عرض</a></div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function renderChartsTab() {
+            return '<div class="chart-box"><div class="chart-title">🏥 توزيع الأمراض حسب المستشفى (شريطي مكدس)</div><canvas id="chartHospitalDisease"></canvas></div>' +
+                '<div class="chart-box"><div class="chart-title">🌍 توزيع الأمراض حسب الجنسية والجنس (حلقي)</div><canvas id="chartNationalityGenderDisease"></canvas></div>' +
+                '<div class="chart-box"><div class="chart-title">📍 توزيع الأمراض حسب المحافظة والجنس (خطي)</div><canvas id="chartProvinceGenderDisease"></canvas></div>' +
+                '<div class="chart-box"><div class="chart-title">📊 توزيع الحالات حسب الجنس (شريطي)</div><canvas id="chartGenderBar"></canvas></div>';
+        }
+
+        function openReport() {
+            if (!selectedId) { alert('⚠️ الرجاء اختيار مريض أولاً'); return; }
+            showDashboard('report');
+        }
+
+        function renderCausesChart() {
+            try {
+                var canvas = document.getElementById('causesChart');
+                if (!canvas) return;
+                if (typeof Chart === 'undefined') {
+                    canvas.parentElement.innerHTML = '<p style="color:red;">Chart.js غير محملة.</p>';
+                    return;
+                }
+                var counts = {};
+                patients.forEach(function (p) {
+                    var key = p.diagnosis_arabic || 'غير محدد';
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+                var sorted = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10);
+                var labels = sorted.map(function (item) { return item[0]; });
+                var data = sorted.map(function (item) { return item[1]; });
+                if (labels.length === 0) return;
+                if (chartInstances.causes) chartInstances.causes.destroy();
+                var ctx = canvas.getContext('2d');
+                chartInstances.causes = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'عدد الحالات',
+                            data: data,
+                            backgroundColor: ['#0d6efd', '#dc3545', '#ffc107', '#198754', '#6f42c1', '#fd7e14', '#0dcaf0', '#d63384', '#20c997', '#6610f2'],
+                            borderColor: '#fff',
+                            borderWidth: 2,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false }, title: { display: true, text: 'أكثر 10 أسباب مرضية' } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            } catch (e) { console.error('renderCausesChart error:', e); }
+        }
+
+        function renderAllCharts() {
+            try {
+                if (typeof Chart === 'undefined') {
+                    document.querySelectorAll('.chart-box canvas').forEach(function (c) {
+                        c.parentElement.innerHTML = '<p style="color:red;">Chart.js غير محملة</p>';
+                    });
+                    return;
+                }
+
+                var colors = ['#0d6efd', '#dc3545', '#ffc107', '#198754', '#6f42c1', '#fd7e14', '#0dcaf0', '#d63384', '#20c997', '#6610f2'];
+
+                // 1. مستشفى × المرض (شريطي مكدس)
+                var hospDisease = {};
+                patients.forEach(function (p) {
+                    var hosp = p.hospital || 'غير محدد';
+                    var disease = p.diagnosis_arabic || 'غير محدد';
+                    if (!hospDisease[hosp]) hospDisease[hosp] = {};
+                    hospDisease[hosp][disease] = (hospDisease[hosp][disease] || 0) + 1;
+                });
+                var hospitals = Object.keys(hospDisease);
+                var allDiseases = new Set();
+                Object.values(hospDisease).forEach(function (d) { Object.keys(d).forEach(function (k) { allDiseases.add(k); }); });
+                var diseaseList = Array.from(allDiseases).slice(0, 8);
+                var datasets1 = diseaseList.map(function (d, idx) {
+                    return {
+                        label: d,
+                        data: hospitals.map(function (h) { return hospDisease[h][d] || 0; }),
+                        backgroundColor: colors[idx % colors.length],
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    };
+                });
+                var canvas1 = document.getElementById('chartHospitalDisease');
+                if (canvas1) {
+                    if (chartInstances.hospitalDisease) chartInstances.hospitalDisease.destroy();
+                    var ctx1 = canvas1.getContext('2d');
+                    chartInstances.hospitalDisease = new Chart(ctx1, {
+                        type: 'bar',
+                        data: { labels: hospitals, datasets: datasets1 },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                                title: { display: true, text: 'توزيع الأمراض حسب المستشفى (مكدس)' }
+                            },
+                            scales: {
+                                x: { stacked: true },
+                                y: { stacked: true, beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+
+                // 2. الجنسية × الجنس × المرض (حلقي)
+                var natGenderDisease = {};
+                patients.forEach(function (p) {
+                    var nat = p.nationality || 'غير محدد';
+                    var gender = p.gender || 'غير محدد';
+                    var disease = p.diagnosis_arabic || 'غير محدد';
+                    var key = nat + '|' + gender;
+                    if (!natGenderDisease[key]) natGenderDisease[key] = {};
+                    natGenderDisease[key][disease] = (natGenderDisease[key][disease] || 0) + 1;
+                });
+                var natGenderKeys = Object.keys(natGenderDisease);
+                var allDiseases2 = new Set();
+                Object.values(natGenderDisease).forEach(function (d) { Object.keys(d).forEach(function (k) { allDiseases2.add(k); }); });
+                var diseaseList2 = Array.from(allDiseases2).slice(0, 6);
+                var datasets2 = diseaseList2.map(function (d, idx) {
+                    return {
+                        label: d,
+                        data: natGenderKeys.map(function (k) { return natGenderDisease[k][d] || 0; }),
+                        backgroundColor: colors[(idx + 3) % colors.length],
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    };
+                });
+                var canvas2 = document.getElementById('chartNationalityGenderDisease');
+                if (canvas2) {
+                    if (chartInstances.nationalityGenderDisease) chartInstances.nationalityGenderDisease.destroy();
+                    var ctx2 = canvas2.getContext('2d');
+                    chartInstances.nationalityGenderDisease = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: { labels: natGenderKeys, datasets: datasets2 },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                                title: { display: true, text: 'توزيع الأمراض حسب الجنسية والجنس (حلقي)' }
+                            },
+                            cutout: '50%'
+                        }
+                    });
+                }
+
+                // 3. المحافظة × الجنس × المرض (خطي)
+                var provGenderDisease = {};
+                patients.forEach(function (p) {
+                    var prov = p.province || 'غير محدد';
+                    var gender = p.gender || 'غير محدد';
+                    var disease = p.diagnosis_arabic || 'غير محدد';
+                    var key = prov + '|' + gender;
+                    if (!provGenderDisease[key]) provGenderDisease[key] = {};
+                    provGenderDisease[key][disease] = (provGenderDisease[key][disease] || 0) + 1;
+                });
+                var provGenderKeys = Object.keys(provGenderDisease);
+                var allDiseases3 = new Set();
+                Object.values(provGenderDisease).forEach(function (d) { Object.keys(d).forEach(function (k) { allDiseases3.add(k); }); });
+                var diseaseList3 = Array.from(allDiseases3).slice(0, 6);
+                var datasets3 = diseaseList3.map(function (d, idx) {
+                    return {
+                        label: d,
+                        data: provGenderKeys.map(function (k) { return provGenderDisease[k][d] || 0; }),
+                        backgroundColor: colors[(idx + 5) % colors.length],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 5
+                    };
+                });
+                var canvas3 = document.getElementById('chartProvinceGenderDisease');
+                if (canvas3) {
+                    if (chartInstances.provinceGenderDisease) chartInstances.provinceGenderDisease.destroy();
+                    var ctx3 = canvas3.getContext('2d');
+                    chartInstances.provinceGenderDisease = new Chart(ctx3, {
+                        type: 'line',
+                        data: { labels: provGenderKeys, datasets: datasets3 },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                                title: { display: true, text: 'توزيع الأمراض حسب المحافظة والجنس (خطي)' }
+                            },
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+
+                // 4. توزيع حسب الجنس (شريطي)
+                var genderCounts = {};
+                patients.forEach(function (p) {
+                    var g = p.gender || 'غير محدد';
+                    genderCounts[g] = (genderCounts[g] || 0) + 1;
+                });
+                var canvas4 = document.getElementById('chartGenderBar');
+                if (canvas4) {
+                    if (chartInstances.genderBar) chartInstances.genderBar.destroy();
+                    var ctx4 = canvas4.getContext('2d');
+                    chartInstances.genderBar = new Chart(ctx4, {
+                        type: 'bar',
+                        data: {
+                            labels: Object.keys(genderCounts),
+                            datasets: [{
+                                label: 'عدد الحالات',
+                                data: Object.values(genderCounts),
+                                backgroundColor: ['#0d6efd', '#dc3545', '#6f42c1'],
+                                borderColor: '#fff',
+                                borderWidth: 2,
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: { display: true, text: 'توزيع الحالات حسب الجنس' }
+                            },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('renderAllCharts error:', e);
+            }
+        }
+
+        function init() {
+            populateSelects();
+            loadData();
+            renderTable();
+            clearForm();
+            getElement('f_admission_date').value = today();
+            document.getElementById('f_province').addEventListener('change', updateDistricts);
+            updateStats();
+        }
+
+        window.onload = function () {
+            try {
+                init();
+            } catch (e) {
+                alert('خطأ في بدء التطبيق: ' + e.message);
+            }
+        };
+    </script>
+</body>
+
+</html>
