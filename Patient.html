@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>نظام أرشفة سجلات المرضى - المستشفى</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js">
     </script>
@@ -14,49 +14,70 @@
             padding: 0;
         }
 
+        :root {
+            --primary: #0d47a1;
+            --primary-light: #1565c0;
+            --primary-dark: #0a3a7a;
+            --success: #198754;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #0dcaf0;
+            --gray: #6c757d;
+            --light-bg: #f8f9fa;
+            --border: #dee2e6;
+            --radius: 12px;
+            --shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        html {
+            font-size: 16px;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #eef2f7;
-            padding: 10px;
+            padding: 8px;
             direction: rtl;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-text-size-adjust: 100%;
         }
 
         .app {
-            max-width: 100%;
+            max-width: 1400px;
             margin: 0 auto;
             background: #fff;
-            border-radius: 14px;
-            padding: 15px 20px;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            box-shadow: var(--shadow);
             flex: 1;
             width: 100%;
         }
 
         h1 {
-            font-size: clamp(20px, 3vw, 28px);
-            color: #0d47a1;
-            margin-bottom: 15px;
+            font-size: clamp(18px, 3.5vw, 30px);
+            color: var(--primary);
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+            word-break: break-word;
         }
 
         .btns {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 15px;
+            gap: 4px;
+            margin-bottom: 12px;
         }
 
         .btn {
-            padding: 6px 14px;
-            border-radius: 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: clamp(11px, 1.1vw, 14px);
+            font-size: clamp(10px, 1.1vw, 14px);
             cursor: pointer;
             transition: 0.2s;
             background: #fff;
@@ -64,17 +85,29 @@
             border: 2px solid #ccc;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
             white-space: nowrap;
+            touch-action: manipulation;
+            user-select: none;
+            min-height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn:hover {
-            opacity: 0.85;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        @media (hover: hover) {
+            .btn:hover {
+                opacity: 0.85;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
         }
 
         .btn-g {
-            border-color: #198754;
-            color: #198754;
+            border-color: var(--success);
+            color: var(--success);
         }
 
         .btn-b {
@@ -83,23 +116,23 @@
         }
 
         .btn-r {
-            border-color: #dc3545;
-            color: #dc3545;
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
         .btn-y {
-            border-color: #ffc107;
+            border-color: var(--warning);
             color: #b38600;
         }
 
         .btn-i {
-            border-color: #0dcaf0;
+            border-color: var(--info);
             color: #0d6e7e;
         }
 
         .btn-s {
-            border-color: #6c757d;
-            color: #6c757d;
+            border-color: var(--gray);
+            color: var(--gray);
         }
 
         .btn-d {
@@ -107,33 +140,28 @@
             color: #212529;
         }
 
-        .btn-o1 {
-            border-color: #212529;
-            background: transparent;
-        }
-
         .btn-o4 {
-            border-color: #0dcaf0;
+            border-color: var(--info);
             background: transparent;
             color: #0d6e7e;
         }
 
         .btn-o5 {
-            border-color: #6c757d;
+            border-color: var(--gray);
             background: transparent;
-            color: #6c757d;
+            color: var(--gray);
         }
 
         .btn-o6 {
-            border-color: #ffc107;
+            border-color: var(--warning);
             background: transparent;
             color: #b38600;
         }
 
         .btn-o7 {
-            border-color: #dc3545;
+            border-color: var(--danger);
             background: transparent;
-            color: #dc3545;
+            color: var(--danger);
         }
 
         .btn-o8 {
@@ -155,9 +183,9 @@
         }
 
         .btn-o12 {
-            border-color: #198754;
+            border-color: var(--success);
             background: transparent;
-            color: #198754;
+            color: var(--success);
         }
 
         .btn-o13 {
@@ -167,37 +195,37 @@
         }
 
         .section {
-            background: #f8f9fa;
+            background: var(--light-bg);
             border-radius: 10px;
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            border: 1px solid #dee2e6;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
         }
 
         .stitle {
-            font-size: clamp(15px, 1.5vw, 19px);
+            font-size: clamp(14px, 1.5vw, 19px);
             font-weight: 700;
-            color: #0d47a1;
-            border-bottom: 2px solid #dee2e6;
-            padding-bottom: 6px;
-            margin-bottom: 10px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .row {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            align-items: end;
+            gap: 5px;
+            align-items: flex-end;
         }
 
         .col {
-            flex: 1 1 100px;
-            min-width: 70px;
+            flex: 1 1 80px;
+            min-width: 60px;
         }
 
         .col label {
             display: block;
-            font-size: 10px;
+            font-size: clamp(9px, 0.8vw, 12px);
             font-weight: 600;
             margin-bottom: 2px;
             color: #333;
@@ -206,11 +234,14 @@
         .col input,
         .col select {
             width: 100%;
-            padding: 5px 8px;
+            padding: 4px 6px;
             border-radius: 6px;
             border: 1px solid #ced4da;
-            font-size: clamp(11px, 0.9vw, 14px);
+            font-size: clamp(10px, 0.9vw, 14px);
             background: #fff;
+            min-height: 30px;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .col input:focus,
@@ -222,54 +253,60 @@
 
         .col-wide {
             flex: 2.5;
-            min-width: 160px;
+            min-width: 120px;
         }
 
         .col-medium {
             flex: 1.5;
-            min-width: 120px;
+            min-width: 100px;
         }
 
         .col-small {
-            flex: 0.5;
-            min-width: 60px;
+            flex: 0.4;
+            min-width: 55px;
         }
 
         .col-xsmall {
-            flex: 0 0 55px;
-            min-width: 50px;
-            max-width: 65px;
+            flex: 0 0 50px;
+            min-width: 45px;
+            max-width: 60px;
         }
 
         .col-xsmall input,
         .col-xsmall select {
             padding: 3px 4px;
-            font-size: 10px;
+            font-size: 9px;
             text-align: center;
         }
 
         .col-hospital {
             flex: 1.5;
-            min-width: 140px;
-            max-width: 250px;
+            min-width: 130px;
+            max-width: 280px;
         }
 
         .col-department {
             flex: 1.3;
-            min-width: 130px;
+            min-width: 120px;
             max-width: 280px;
         }
 
         .col-status {
             flex: 1.3;
-            min-width: 130px;
+            min-width: 120px;
             max-width: 280px;
         }
 
         .col-education {
             flex: 1.3;
-            min-width: 130px;
+            min-width: 120px;
             max-width: 280px;
+        }
+
+        .col-doctor {
+            flex: 2;
+            min-width: 150px;
+            max-width: 400px;
         }
 
         input[type=number]::-webkit-inner-spin-button,
@@ -283,7 +320,6 @@
             appearance: textfield;
         }
 
-        /* حقول التشخيص - مع اقتراحات */
         .diagnosis-wrapper {
             position: relative;
             width: 100%;
@@ -292,18 +328,12 @@
         .diagnosis-wrapper input,
         .diagnosis-wrapper select {
             width: 100%;
-            padding: 5px 8px;
+            padding: 4px 6px;
             border-radius: 6px;
             border: 1px solid #ced4da;
-            font-size: clamp(11px, 0.9vw, 14px);
+            font-size: clamp(10px, 0.9vw, 14px);
             background: #fff;
-        }
-
-        .diagnosis-wrapper input:focus,
-        .diagnosis-wrapper select:focus {
-            border-color: #0d6efd;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.12);
+            min-height: 30px;
         }
 
         .suggestions-box {
@@ -314,7 +344,7 @@
             background: #fff;
             border: 1px solid #ced4da;
             border-radius: 6px;
-            max-height: 180px;
+            max-height: 160px;
             overflow-y: auto;
             z-index: 100;
             display: none;
@@ -322,20 +352,27 @@
         }
 
         .suggestions-box .suggestion-item {
-            padding: 5px 10px;
+            padding: 4px 8px;
             cursor: pointer;
             border-bottom: 1px solid #f0f0f0;
-            font-size: clamp(11px, 0.85vw, 13px);
+            font-size: clamp(10px, 0.8vw, 13px);
+            touch-action: manipulation;
         }
 
-        .suggestions-box .suggestion-item:hover {
-            background: #e3f2fd;
+        .suggestions-box .suggestion-item:active {
+            background: #bbdefb;
+        }
+
+        @media (hover: hover) {
+            .suggestions-box .suggestion-item:hover {
+                background: #e3f2fd;
+            }
         }
 
         .suggestions-box .suggestion-item .code {
-            color: #0d47a1;
+            color: var(--primary);
             font-weight: 600;
-            margin-left: 8px;
+            margin-left: 6px;
         }
 
         .suggestions-box .suggestion-item .desc {
@@ -345,44 +382,55 @@
         .tbl {
             max-height: 50vh;
             overflow: auto;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border);
             border-radius: 8px;
             width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tbl table {
             width: 100%;
-            min-width: 1100px;
+            min-width: 800px;
             border-collapse: collapse;
-            font-size: clamp(11px, 0.85vw, 13px);
+            font-size: clamp(10px, 0.85vw, 13px);
         }
 
         .tbl th {
-            background: #0d47a1;
+            background: var(--primary);
             color: #fff;
-            padding: 6px 4px;
+            padding: 5px 3px;
             position: sticky;
             top: 0;
             z-index: 2;
             text-align: center;
-            font-size: clamp(10px, 0.8vw, 12px);
-        }
-
-        .tbl td {
-            padding: 5px 4px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            font-size: clamp(10px, 0.8vw, 12px);
+            font-size: clamp(9px, 0.8vw, 12px);
             white-space: nowrap;
         }
 
-        .tbl tr:nth-child(even) {
-            background: #f8f9fa;
+        .tbl td {
+            padding: 4px 3px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            font-size: clamp(9px, 0.8vw, 12px);
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .tbl tr:hover {
-            background: #e3f2fd;
-            cursor: pointer;
+        .tbl tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+
+        .tbl tr:active {
+            background: #bbdefb;
+        }
+
+        @media (hover: hover) {
+            .tbl tr:hover {
+                background: #e3f2fd;
+                cursor: pointer;
+            }
         }
 
         .hl {
@@ -395,13 +443,13 @@
         }
 
         .app-footer {
-            margin-top: 20px;
-            padding: 12px 15px;
-            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            margin-top: 16px;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
             border-radius: 10px;
             text-align: center;
-            font-size: clamp(11px, 0.9vw, 14px);
+            font-size: clamp(10px, 0.9vw, 14px);
         }
 
         .app-footer .dev-info {
@@ -409,29 +457,31 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 8px 15px;
+            gap: 6px 12px;
         }
 
         .app-footer .logo {
-            width: 40px;
-            height: 40px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            background: #ffd700;
-            color: #0d47a1;
+            background: var(--warning);
+            color: var(--primary);
             font-family: 'Courier New', monospace;
-            font-size: 22px;
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
         .app-footer .highlight-name {
             color: #ffd700;
             font-weight: 700;
-            font-size: clamp(13px, 1vw, 16px);
+            font-size: clamp(12px, 1vw, 16px);
         }
 
+        /* Modal Styles */
         .upload-modal {
             position: fixed;
             top: 0;
@@ -445,6 +495,7 @@
             z-index: 9999;
             padding: 15px;
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
 
         .upload-modal.show {
@@ -454,8 +505,8 @@
         .upload-box {
             background: #fff;
             border-radius: 16px;
-            padding: 20px 25px;
-            max-width: 600px;
+            padding: 18px 20px;
+            max-width: 550px;
             width: 95%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-height: 90vh;
@@ -463,40 +514,48 @@
         }
 
         .upload-box h2 {
-            color: #0d47a1;
-            margin-bottom: 12px;
-            font-size: clamp(18px, 1.8vw, 24px);
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: clamp(18px, 2vw, 24px);
         }
 
         .upload-box .drop-zone {
             border: 3px dashed #ccc;
             border-radius: 12px;
-            padding: 25px 15px;
+            padding: 20px 12px;
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
             background: #fafafa;
+            touch-action: manipulation;
         }
 
-        .upload-box .drop-zone:hover {
+        .upload-box .drop-zone:active {
             border-color: #0d6efd;
             background: #f0f7ff;
         }
 
+        @media (hover: hover) {
+            .upload-box .drop-zone:hover {
+                border-color: #0d6efd;
+                background: #f0f7ff;
+            }
+        }
+
         .upload-box .drop-zone .icon {
-            font-size: 38px;
+            font-size: 32px;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .upload-box .drop-zone p {
             color: #666;
-            font-size: clamp(13px, 0.9vw, 15px);
+            font-size: clamp(12px, 0.9vw, 15px);
         }
 
         .upload-box .file-info {
-            margin-top: 10px;
-            padding: 8px;
+            margin-top: 8px;
+            padding: 6px;
             background: #e8f5e9;
             border-radius: 8px;
             display: none;
@@ -509,8 +568,8 @@
         .upload-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 12px;
+            gap: 5px;
+            margin-top: 10px;
             justify-content: center;
         }
 
@@ -526,6 +585,8 @@
             justify-content: center;
             z-index: 999;
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 15px;
         }
 
         .mask.show {
@@ -534,31 +595,31 @@
 
         .mbox {
             background: #fff;
-            padding: 20px 25px;
+            padding: 18px 20px;
             border-radius: 16px;
-            max-width: 500px;
-            width: 92%;
+            max-width: 480px;
+            width: 95%;
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .mbox h3 {
-            color: #0d47a1;
-            font-size: clamp(18px, 1.8vw, 24px);
-            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: clamp(18px, 2vw, 24px);
+            margin-bottom: 12px;
             border-bottom: 2px solid #0d6efd;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
         .mbox .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .mbox .form-group label {
             display: block;
             font-weight: 600;
-            font-size: 12px;
+            font-size: clamp(11px, 0.9vw, 13px);
             color: #333;
             margin-bottom: 3px;
         }
@@ -566,104 +627,104 @@
         .mbox .form-group select,
         .mbox .form-group input {
             width: 100%;
-            padding: 6px 10px;
+            padding: 5px 8px;
             border-radius: 8px;
             border: 1.5px solid #ced4da;
-            font-size: 13px;
+            font-size: clamp(12px, 0.9vw, 14px);
             transition: 0.2s;
-            background: #f8f9fa;
-        }
-
-        .mbox .form-group select:focus,
-        .mbox .form-group input:focus {
-            border-color: #0d6efd;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
-            background: #fff;
+            background: var(--light-bg);
+            min-height: 34px;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .mbox .btn-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 15px;
+            gap: 5px;
+            margin-top: 12px;
         }
 
         .mbox .btn-actions .btn {
             flex: 1;
-            min-width: 70px;
+            min-width: 60px;
             text-align: center;
-            padding: 6px 12px;
+            padding: 5px 10px;
         }
 
         .reset-modal .reset-options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin: 12px 0;
+            gap: 8px;
+            margin: 10px 0;
         }
 
         .reset-modal .reset-options .option-btn {
-            padding: 12px 18px;
+            padding: 10px 14px;
             border-radius: 10px;
-            border: 2px solid #dee2e6;
-            background: #f8f9fa;
+            border: 2px solid var(--border);
+            background: var(--light-bg);
             cursor: pointer;
             text-align: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: clamp(13px, 0.9vw, 15px);
             transition: 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            touch-action: manipulation;
+            min-height: 44px;
         }
 
-        .reset-modal .reset-options .option-btn:hover {
-            border-color: #0d6efd;
-            background: #e3f2fd;
+        .reset-modal .reset-options .option-btn:active {
+            transform: scale(0.97);
+        }
+
+        @media (hover: hover) {
+            .reset-modal .reset-options .option-btn:hover {
+                border-color: #0d6efd;
+                background: #e3f2fd;
+            }
         }
 
         .reset-modal .reset-options .option-btn.save {
-            border-color: #198754;
-            color: #198754;
+            border-color: var(--success);
+            color: var(--success);
         }
 
-        .reset-modal .reset-options .option-btn.save:hover {
-            background: #e8f5e9;
+        .reset-modal .reset-options .option-btn.save:active {
+            background: #c8e6c9;
         }
 
-        .reset-modal .reset-options .option-btn.reset {
-            border-color: #dc3545;
-            color: #dc3545;
+        @media (hover: hover) {
+            .reset-modal .reset-options .option-btn.save:hover {
+                background: #e8f5e9;
+            }
         }
 
-        .reset-modal .reset-options .option-btn.reset:hover {
-            background: #fce4ec;
-        }
-
-        /* أنماط التحليل الإحصائي */
+        /* Stats Analysis */
         .stats-analysis {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
         }
 
         .analysis-card {
             background: #fff;
             border-radius: 12px;
-            padding: 15px 18px;
+            padding: 12px 14px;
             border: 1px solid #e9ecef;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .analysis-card h4 {
-            color: #0d47a1;
-            margin-bottom: 10px;
-            font-size: clamp(14px, 1.1vw, 17px);
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: clamp(13px, 1.1vw, 17px);
             border-bottom: 2px solid #e9ecef;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
 
         .highlight-card {
@@ -672,21 +733,22 @@
         }
 
         .success-card {
-            border-right: 4px solid #198754;
+            border-right: 4px solid var(--success);
             background: #f8fff8;
         }
 
         .danger-card {
-            border-right: 4px solid #dc3545;
+            border-right: 4px solid var(--danger);
             background: #fff8f8;
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 4px 0;
             border-bottom: 1px solid #f0f0f0;
-            font-size: clamp(12px, 0.9vw, 14px);
+            font-size: clamp(11px, 0.9vw, 14px);
+            gap: 8px;
         }
 
         .stat-row:last-child {
@@ -695,16 +757,17 @@
 
         .stat-val {
             font-weight: 700;
-            color: #0d47a1;
+            color: var(--primary);
+            white-space: nowrap;
         }
 
         .badge {
             display: inline-block;
-            padding: 1px 8px;
+            padding: 1px 6px;
             border-radius: 12px;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
-            margin-right: 4px;
+            margin-right: 3px;
         }
 
         .badge-blue {
@@ -719,12 +782,12 @@
 
         .badge-green {
             background: #d1e7dd;
-            color: #198754;
+            color: var(--success);
         }
 
         .badge-red {
             background: #f8d7da;
-            color: #dc3545;
+            color: var(--danger);
         }
 
         .badge-orange {
@@ -735,93 +798,106 @@
         .chart-box {
             background: #fff;
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
             border: 1px solid #e9ecef;
         }
 
         .chart-box .chart-title {
             font-weight: 700;
-            color: #0d47a1;
-            margin-bottom: 10px;
-            font-size: clamp(13px, 1vw, 16px);
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: clamp(12px, 1vw, 16px);
         }
 
         .chart-box canvas {
-            max-height: 250px;
+            max-height: 220px;
             width: 100% !important;
+            height: auto !important;
         }
 
         .rbox {
             background: #fff;
             border-radius: 12px;
-            padding: 15px;
+            padding: 12px;
             border: 1px solid #e9ecef;
         }
 
         .rbox h3 {
-            color: #0d47a1;
-            margin-bottom: 10px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: clamp(16px, 1.3vw, 20px);
         }
 
         .rbox .row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 6px;
         }
 
         .rbox .col {
             display: flex;
             flex-direction: column;
-            padding: 6px 10px;
-            background: #f8f9fa;
+            padding: 5px 8px;
+            background: var(--light-bg);
             border-radius: 8px;
         }
 
         .rbox .col label {
             font-weight: 600;
-            font-size: 10px;
+            font-size: 9px;
             color: #666;
         }
 
         .rbox .col span {
             font-weight: 500;
-            color: #0d47a1;
-            font-size: 13px;
+            color: var(--primary);
+            font-size: clamp(12px, 0.9vw, 14px);
+            word-break: break-word;
         }
 
         .alert-box {
-            padding: 20px;
+            padding: 16px;
             background: #fff3cd;
             border-radius: 10px;
             text-align: center;
             color: #856404;
             font-weight: 600;
+            font-size: clamp(13px, 1vw, 16px);
         }
 
-        /* أيقونة المرفق - كتب مرصوصة ملونة */
         .attachment-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 2px;
             cursor: pointer;
-            font-size: 16px;
-            padding: 2px 6px;
+            font-size: 14px;
+            padding: 2px 4px;
             border-radius: 4px;
             background: rgba(13, 110, 253, 0.08);
             transition: 0.2s;
+            touch-action: manipulation;
+            min-width: 28px;
+            min-height: 24px;
         }
 
-        .attachment-icon:hover {
+        .attachment-icon:active {
+            transform: scale(0.92);
             background: rgba(13, 110, 253, 0.2);
-            transform: scale(1.1);
+        }
+
+        @media (hover: hover) {
+            .attachment-icon:hover {
+                background: rgba(13, 110, 253, 0.2);
+                transform: scale(1.05);
+            }
         }
 
         .attachment-icon .book {
             display: inline-block;
-            width: 12px;
-            height: 14px;
+            width: 10px;
+            height: 12px;
             border-radius: 2px;
             margin: 0 -1px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -832,84 +908,150 @@
         }
 
         .attachment-icon .book-2 {
-            background: linear-gradient(135deg, #dc3545, #b02a37);
+            background: linear-gradient(135deg, var(--danger), #b02a37);
         }
 
         .attachment-icon .book-3 {
-            background: linear-gradient(135deg, #198754, #157347);
+            background: linear-gradient(135deg, var(--success), #157347);
         }
 
         .attachment-icon .book-4 {
-            background: linear-gradient(135deg, #ffc107, #d39e00);
+            background: linear-gradient(135deg, var(--warning), #d39e00);
         }
 
-        @media (max-width: 768px) {
+        .dash {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #f8faff;
+            border-radius: 12px;
+            border: 2px solid #0d6efd;
+        }
+
+        .dash .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .dash .tab-btn {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 25px;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: clamp(10px, 0.9vw, 14px);
+            touch-action: manipulation;
+            min-height: 30px;
+            white-space: nowrap;
+        }
+
+        .dash .tab-btn.active {
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .dash .tab-btn:active {
+            transform: scale(0.95);
+        }
+
+        .hospital-indicator {
+            background: #e8f5e9;
+            border-radius: 6px;
+            padding: 5px 10px;
+            border-right: 4px solid var(--success);
+            margin-top: 6px;
+            font-size: clamp(11px, 0.95vw, 14px);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
             .app {
                 padding: 10px 12px;
             }
 
-            .btn {
-                padding: 4px 10px;
-                font-size: 10px;
-            }
-
-            .col {
-                flex: 1 1 100%;
-                min-width: 50px;
-            }
-
-            .col-medium,
-            .col-hospital,
-            .col-department,
-            .col-status,
-            .col-education {
-                flex: 1 1 100%;
-                min-width: 50px;
-                max-width: none;
-            }
-
             .tbl table {
-                min-width: 800px;
+                min-width: 700px;
             }
 
             .stats-analysis {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             body {
                 padding: 4px;
             }
 
             .app {
-                padding: 6px 8px;
+                padding: 8px 8px;
                 border-radius: 10px;
+            }
+
+            .btn {
+                padding: 3px 7px;
+                font-size: 9px;
+                border-width: 1.5px;
+                min-height: 26px;
             }
 
             .btns {
                 gap: 3px;
             }
 
-            .btn {
-                padding: 2px 6px;
-                font-size: 9px;
-                border-width: 1.5px;
-            }
-
             .section {
                 padding: 6px 8px;
             }
 
+            .col {
+                flex: 1 1 100%;
+                min-width: 45px;
+            }
+
+            .col-medium,
+            .col-hospital,
+            .col-department,
+            .col-status,
+            .col-education,
+            .col-doctor {
+                flex: 1 1 100%;
+                min-width: 45px;
+                max-width: none;
+            }
+
+            .col-xsmall {
+                flex: 0 0 40px;
+                min-width: 35px;
+                max-width: 50px;
+            }
+
+            .col-xsmall input,
+            .col-xsmall select {
+                font-size: 8px;
+                padding: 2px 3px;
+            }
+
             .tbl table {
-                min-width: 600px;
-                font-size: 9px;
+                min-width: 500px;
+                font-size: 8px;
             }
 
             .tbl th,
             .tbl td {
                 padding: 2px 2px;
-                font-size: 8px;
+                font-size: 7px;
+            }
+
+            .tbl th {
+                font-size: 7px;
+            }
+
+            .upload-box {
+                padding: 12px 14px;
             }
 
             .mbox {
@@ -917,13 +1059,202 @@
             }
 
             .attachment-icon {
-                font-size: 12px;
-                padding: 1px 4px;
+                font-size: 10px;
+                padding: 1px 3px;
+                min-width: 20px;
+                min-height: 18px;
             }
 
             .attachment-icon .book {
-                width: 8px;
-                height: 10px;
+                width: 7px;
+                height: 9px;
+            }
+
+            .rbox .row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stats-analysis {
+                grid-template-columns: 1fr;
+            }
+
+            .dash {
+                padding: 8px 10px;
+            }
+
+            .dash .tab-btn {
+                font-size: 9px;
+                padding: 3px 8px;
+                min-height: 24px;
+            }
+
+            .chart-box canvas {
+                max-height: 180px;
+            }
+
+            .app-footer .logo {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app {
+                padding: 4px 4px;
+                border-radius: 8px;
+            }
+
+            .btn {
+                padding: 2px 5px;
+                font-size: 8px;
+                min-height: 22px;
+                border-width: 1px;
+            }
+
+            .btns {
+                gap: 2px;
+            }
+
+            .section {
+                padding: 4px 6px;
+                margin-bottom: 6px;
+            }
+
+            .stitle {
+                font-size: 12px;
+                padding-bottom: 3px;
+            }
+
+            .col {
+                min-width: 35px;
+            }
+
+            .col label {
+                font-size: 7px;
+            }
+
+            .col input,
+            .col select {
+                font-size: 8px;
+                padding: 2px 4px;
+                min-height: 22px;
+            }
+
+            .tbl table {
+                min-width: 380px;
+                font-size: 7px;
+            }
+
+            .tbl th,
+            .tbl td {
+                padding: 1px 1px;
+                font-size: 6px;
+            }
+
+            .tbl th {
+                font-size: 6px;
+            }
+
+            .upload-box {
+                padding: 8px 10px;
+            }
+
+            .upload-box .drop-zone {
+                padding: 12px 8px;
+            }
+
+            .upload-box .drop-zone .icon {
+                font-size: 24px;
+            }
+
+            .mbox {
+                padding: 8px 10px;
+            }
+
+            .mbox h3 {
+                font-size: 16px;
+            }
+
+            .rbox .row {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-card {
+                padding: 8px 10px;
+            }
+
+            .app-footer .dev-info {
+                gap: 4px 8px;
+                font-size: 8px;
+            }
+
+            .app-footer .highlight-name {
+                font-size: 10px;
+            }
+
+            .hospital-indicator {
+                font-size: 9px;
+                padding: 3px 6px;
+            }
+
+            .dash .tab-btn {
+                font-size: 7px;
+                padding: 2px 6px;
+                min-height: 20px;
+            }
+
+            .chart-box canvas {
+                max-height: 140px;
+            }
+
+            .stat-row {
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .tbl table {
+                min-width: 320px;
+                font-size: 6px;
+            }
+
+            .tbl th,
+            .tbl td {
+                font-size: 5px;
+                padding: 1px;
+            }
+
+            .btn {
+                font-size: 7px;
+                padding: 1px 4px;
+                min-height: 18px;
+            }
+        }
+
+        /* Print */
+        @media print {
+
+            .btns,
+            .upload-modal,
+            .mask {
+                display: none !important;
+            }
+
+            .app {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .tbl {
+                max-height: none;
+                overflow: visible;
+            }
+
+            .tbl th {
+                background: #0d47a1 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
@@ -957,11 +1288,11 @@
             <button class="btn btn-o7" onclick="exitApp()" style="border-color:#dc3545;color:#dc3545;">🚪 خروج</button>
         </div>
 
-        <!-- شريط اختيار المستشفى (بدون فلترة) -->
+        <!-- شريط اختيار المستشفى -->
         <div class="section" style="background:#e3f2fd;border-color:#0d6efd;">
             <div class="stitle" style="color:#0d47a1;">🏛️ اختيار المستشفى</div>
             <div class="row">
-                <div class="col col-hospital" style="flex:2; min-width:250px;">
+                <div class="col col-hospital" style="flex:2; min-width:200px;">
                     <label>اختر المستشفى الذي تعمل به</label>
                     <select id="hospitalSelector" onchange="applyHospitalFilter()">
                         <option value="">-- اختر المستشفى --</option>
@@ -978,15 +1309,14 @@
                         <option value="مستشفى الحسينية العام">مستشفى الحسينية العام</option>
                     </select>
                 </div>
-                <div class="col col-small" style="display:flex; align-items:flex-end; gap:3px;">
-                    <button class="btn btn-b" onclick="applyHospitalFilter()"
-                        style="flex:1;padding:3px 8px;font-size:11px;">✅ تفعيل</button>
-                    <button class="btn btn-s" onclick="clearHospitalFilter()"
-                        style="flex:1;padding:3px 8px;font-size:11px;">❌ إلغاء</button>
+                <div class="col col-small" style="display:flex; align-items:flex-end; gap:3px; flex:0 0 auto;">
+                    <button class="btn btn-b" onclick="applyHospitalFilter()" style="padding:3px 8px;font-size:11px;">✅
+                        تفعيل</button>
+                    <button class="btn btn-s" onclick="clearHospitalFilter()" style="padding:3px 8px;font-size:11px;">❌
+                        إلغاء</button>
                 </div>
             </div>
-            <div class="hospital-indicator"
-                style="background:#e8f5e9;border-radius:6px;padding:6px 12px;border-right:4px solid #198754;margin-top:8px;font-size:clamp(12px,0.95vw,14px);font-weight:600;color:#0d47a1;">
+            <div class="hospital-indicator">
                 🏥 المستشفى المحدد: <span id="selectedHospitalName" style="color:#198754;">لم يتم الاختيار</span>
             </div>
         </div>
@@ -1016,17 +1346,15 @@
                         <option value="">--</option>
                         <option>عراقي</option>
                         <option>عربي</option>
-                        <option>أسيوي</option>
-                        <option>افريقي</option>
-                        <option>اوربي</option>
-                        <option>امريكي</option>
+                        <option>آسيوي</option>
+                        <option>أفريقي</option>
+                        <option>أوروبي</option>
+                        <option>أمريكي</option>
                         <option>كندي</option>
-                        <option>استرالي</option>
-                        <option>اسباني</option>
-                        <option>برازيلي</option>
-                        <option>اخرى</option>
+                        <option>أسترالي</option>
+                        <option>إسباني</option>
+                        <option>أخرى</option>
                         <option>غير معروف</option>
-
                     </select></div>
                 <div class="col col-small"><label>العمر (يوم)</label><input type="number" id="f_age_days" min="0"></div>
                 <div class="col col-small"><label>العمر (شهر)</label><input type="number" id="f_age_months" min="0">
@@ -1085,7 +1413,6 @@
                         <option>نعم</option>
                         <option>كلا</option>
                     </select></div>
-                <!-- التشخيص بالعربي قبل رمز ICD -->
                 <div class="col col-wide">
                     <label>التشخيص بالعربي</label>
                     <div class="diagnosis-wrapper">
@@ -1109,8 +1436,8 @@
                         <option value="">--</option>
                     </select></div>
                 <div class="col col-medium"><label>الحي</label><input type="text" id="f_neighborhood"></div>
-                <!-- تم إزالة حقل المستشفى من هنا ووضعه في الأعلى -->
-                <div class="col col-small"><label>اسم الطبيب</label><input type="text" id="f_doctor_name"></div>
+                <div class="col col-doctor"><label>اسم الطبيب</label><input type="text" id="f_doctor_name"
+                        style="min-width:160px;"></div>
             </div>
         </div>
 
@@ -1128,7 +1455,7 @@
                 <div class="col col-department"><label>الردهة</label><select id="f_department">
                         <option value="">--</option>
                         <option>الباطنية</option>
-                        <option>الجراحة</option>
+                        <option>الجراحةالعامة</option>
                         <option>العناية المركزة</option>
                         <option>القلبية</option>
                         <option>العصبية</option>
@@ -1178,21 +1505,13 @@
         </div>
 
         <!-- داشبورد -->
-        <div class="dash" id="dashboard"
-            style="margin-top:15px;padding:15px 18px;background:#f8faff;border-radius:12px;border:2px solid #0d6efd;display:none;">
-            <div class="tabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
-                <button class="tab-btn active" data-tab="causes" onclick="switchTab('causes')"
-                    style="padding:5px 16px;border:none;border-radius:25px;background:transparent;font-weight:600;cursor:pointer;font-size:clamp(11px,0.9vw,14px);">📊
-                    الأسباب العشرة</button>
-                <button class="tab-btn" data-tab="report" onclick="switchTab('report')"
-                    style="padding:5px 16px;border:none;border-radius:25px;background:transparent;font-weight:600;cursor:pointer;font-size:clamp(11px,0.9vw,14px);">📋
-                    تقرير المريض</button>
-                <button class="tab-btn" data-tab="charts" onclick="switchTab('charts')"
-                    style="padding:5px 16px;border:none;border-radius:25px;background:transparent;font-weight:600;cursor:pointer;font-size:clamp(11px,0.9vw,14px);">📈
-                    مخططات</button>
-                <button class="tab-btn" data-tab="analysis" onclick="switchTab('analysis')"
-                    style="padding:5px 16px;border:none;border-radius:25px;background:transparent;font-weight:600;cursor:pointer;font-size:clamp(11px,0.9vw,14px);">📋
-                    تحليل إحصائي</button>
+        <div class="dash" id="dashboard" style="display:none;">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="causes" onclick="switchTab('causes')">📊 الأسباب
+                    العشرة</button>
+                <button class="tab-btn" data-tab="report" onclick="switchTab('report')">📋 تقرير المريض</button>
+                <button class="tab-btn" data-tab="charts" onclick="switchTab('charts')">📈 مخططات</button>
+                <button class="tab-btn" data-tab="analysis" onclick="switchTab('analysis')">📋 تحليل إحصائي</button>
             </div>
             <div id="tabContent"></div>
         </div>
@@ -1227,16 +1546,17 @@
         <div class="mask reset-modal" id="resetModal">
             <div class="mbox">
                 <h3>🔄 حفظ وتصفير الشهر</h3>
-                <p style="color:#666;margin-bottom:12px;">سيتم حفظ البيانات في ملف وسيتم إرسالها إلى المركز الرئيسي</p>
+                <p style="color:#666;margin-bottom:10px;font-size:clamp(12px,0.9vw,14px);">سيتم حفظ البيانات في ملف
+                    وسيتم إرسالها إلى المركز الرئيسي</p>
                 <div class="reset-options">
                     <button class="option-btn save" onclick="saveAndReset()">
                         <span style="font-size:18px;">💾</span>
                         حفظ وتصفير
-                        <span style="font-size:11px;color:#666;font-weight:400;display:block;">سيتم حفظ البيانات في ملف
+                        <span style="font-size:10px;color:#666;font-weight:400;display:block;">سيتم حفظ البيانات في ملف
                             وإرسالها للمركز</span>
                     </button>
                 </div>
-                <div class="btn-actions" style="margin-top:8px;">
+                <div class="btn-actions" style="margin-top:6px;">
                     <button class="btn btn-s" onclick="closeResetModal()" style="flex:1;">إلغاء</button>
                 </div>
             </div>
@@ -1246,11 +1566,12 @@
         <div class="upload-modal" id="uploadModal">
             <div class="upload-box">
                 <h2>📎 ارفاق ملف</h2>
-                <p style="color:#666;margin-bottom:12px;">اسحب الملف هنا أو اضغط للاختيار</p>
+                <p style="color:#666;margin-bottom:10px;font-size:clamp(12px,0.9vw,14px);">اسحب الملف هنا أو اضغط
+                    للاختيار</p>
                 <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
                     <span class="icon">📄</span>
                     <p>اختر ملفاً من جهازك</p>
-                    <p style="font-size:11px;color:#999;">JPEG, PNG, PDF, TIFF</p>
+                    <p style="font-size:10px;color:#999;">JPEG, PNG, PDF, TIFF</p>
                     <input type="file" id="fileInput" style="display:none" accept="image/*,application/pdf,image/tiff">
                 </div>
                 <div class="file-info" id="fileInfo">
@@ -1281,7 +1602,6 @@
 
     <script>
         // ==================== قوائم البيانات ====================
-        // ICD-10 الكامل (الإصدار 2019 - مختصر للسرعة مع إضافة رموز شائعة)
         var ICD_CODES = {
             'A00': 'كوليرا', 'A01': 'حمى التيفوئيد', 'A02': 'عدوى السالمونيلا', 'A03': 'شيجيلا', 'A04': 'عدوى معوية بكتيرية أخرى',
             'A05': 'تسمم غذائي بكتيري', 'A06': 'داء الأميبات', 'A07': 'أمراض معوية أولية أخرى', 'A08': 'التهابات معوية فيروسية',
@@ -1311,7 +1631,6 @@
             'B89': 'غزو طفيلي غير محدد', 'B90': 'آثار السل', 'B91': 'آثار شلل الأطفال', 'B92': 'آثار الجدري',
             'B94': 'آثار أمراض معدية أخرى', 'B95': 'مكورات', 'B96': 'بكتيريا أخرى', 'B97': 'فيروسات', 'B98': 'عوامل معدية محددة أخرى',
             'B99': 'أمراض معدية أخرى',
-            // الأورام
             'C00': 'ورم خبيث في الشفة', 'C01': 'ورم خبيث في قاعدة اللسان', 'C02': 'ورم خبيث في أجزاء أخرى من اللسان',
             'C03': 'ورم خبيث في اللثة', 'C04': 'ورم خبيث في أرضية الفم', 'C05': 'ورم خبيث في الحنك',
             'C06': 'ورم خبيث في أجزاء أخرى من الفم', 'C07': 'ورم خبيث في الغدة النكفية', 'C08': 'ورم خبيث في الغدد اللعابية الأخرى',
@@ -1341,7 +1660,6 @@
             'C85': 'لمفوما أخرى', 'C90': 'ورم نقيي متعدد',
             'C91': 'ابيضاض الدم الليمفاوي', 'C92': 'ابيضاض الدم النقيي', 'C93': 'ابيضاض الدم الوحيدي',
             'C94': 'ابيضاض الدم', 'C95': 'ابيضاض الدم غير محدد', 'C96': 'أورام خبيثة أخرى',
-            // أمراض الدم
             'D50': 'فقر الدم الناجم عن نقص الحديد', 'D51': 'فقر الدم الناجم عن نقص فيتامين ب12',
             'D52': 'فقر الدم الناجم عن نقص حمض الفوليك', 'D53': 'فقر الدم الغذائي', 'D55': 'فقر الدم الانحلالي',
             'D56': 'فقر الدم المنجلي', 'D57': 'فقر الدم المنجلي', 'D58': 'فقر الدم الانحلالي', 'D59': 'فقر الدم الانحلالي',
@@ -1349,7 +1667,6 @@
             'D64': 'فقر الدم الأخرى', 'D65': 'التخثر المنتشر داخل الأوعية', 'D66': 'الهيموفيليا أ', 'D67': 'الهيموفيليا ب',
             'D68': 'أمراض النزف الأخرى', 'D69': 'فرفرية', 'D70': 'ندرة المحببات', 'D71': 'أمراض الخلايا المحببة',
             'D72': 'أمراض الخلايا المحببة', 'D73': 'أمراض الطحال', 'D74': 'متلازمة فرط الأكسجة', 'D75': 'أمراض أخرى في الدم',
-            // أمراض الغدد الصماء
             'E10': 'داء السكري من النوع الأول', 'E11': 'داء السكري من النوع الثاني', 'E12': 'داء السكري',
             'E13': 'داء السكري', 'E14': 'داء السكري غير محدد', 'E15': 'غيبوبة سكر الدم',
             'E16': 'أمراض أخرى في البنكرياس', 'E20': 'قصور جارات الدرقية', 'E21': 'فرط جارات الدرقية',
@@ -1368,7 +1685,6 @@
             'E77': 'أمراض استقلاب البروتينات', 'E78': 'أمراض استقلاب الدهون', 'E79': 'أمراض استقلاب حمض البوليك',
             'E80': 'أمراض استقلاب البيليروبين', 'E83': 'أمراض استقلاب المعادن', 'E84': 'التليف الكيسي',
             'E85': 'الداء النشواني', 'E86': 'نقص حجم السوائل', 'E87': 'اضطرابات الكهارل', 'E88': 'اضطرابات استقلابية أخرى',
-            // الأمراض العقلية
             'F10': 'اضطرابات بسبب الكحول', 'F11': 'اضطرابات بسبب المواد الأفيونية', 'F12': 'اضطرابات بسبب القنب',
             'F13': 'اضطرابات بسبب المهدئات', 'F14': 'اضطرابات بسبب الكوكايين', 'F15': 'اضطرابات بسبب المنشطات',
             'F16': 'اضطرابات بسبب المهلوسات', 'F17': 'اضطرابات بسبب التبغ', 'F18': 'اضطرابات بسبب المذيبات',
@@ -1392,7 +1708,6 @@
             'F91': 'اضطراب السلوك', 'F92': 'اضطرابات السلوك المختلطة', 'F93': 'اضطرابات القلق في الطفولة',
             'F94': 'اضطرابات العلاقات الاجتماعية', 'F95': 'اضطرابات التشنجات اللاإرادية', 'F98': 'اضطرابات سلوكية أخرى',
             'F99': 'اضطراب عقلي غير محدد',
-            // أمراض الجهاز العصبي
             'G00': 'التهاب السحايا البكتيري', 'G01': 'التهاب السحايا في الأمراض البكتيرية', 'G02': 'التهاب السحايا في الأمراض الأخرى',
             'G03': 'التهاب السحايا الآخر', 'G04': 'التهاب الدماغ', 'G05': 'التهاب الدماغ في الأمراض الأخرى',
             'G06': 'خراج الدماغ', 'G07': 'خراج الدماغ في الأمراض الأخرى', 'G08': 'التهاب الوريد داخل القحف',
@@ -1415,7 +1730,6 @@
             'G82': 'الشلل النصفي والشلل الرباعي', 'G83': 'متلازمات الشلل الأخرى', 'G90': 'اضطرابات الجهاز العصبي اللاإرادي',
             'G91': 'استسقاء الدماغ', 'G92': 'اعتلال الدماغ السام', 'G93': 'اضطرابات الدماغ الأخرى', 'G94': 'اضطرابات الدماغ في الأمراض الأخرى',
             'G95': 'أمراض النخاع الشوكي الأخرى', 'G96': 'اضطرابات الجهاز العصبي الأخرى', 'G97': 'اضطرابات الجهاز العصبي بعد الإجراءات',
-            // أمراض العين
             'H00': 'التهاب الجفن', 'H01': 'التهابات الجفن الأخرى', 'H02': 'اضطرابات الجفن الأخرى',
             'H04': 'اضطرابات الجهاز الدمعي', 'H05': 'اضطرابات المدار', 'H10': 'التهاب الملتحمة',
             'H11': 'اضطرابات الملتحمة الأخرى', 'H15': 'اضطرابات الصلبة', 'H16': 'التهاب القرنية',
@@ -1438,7 +1752,6 @@
             'H80': 'تصلب الأذن', 'H81': 'اضطرابات الجهاز الدهليزي', 'H82': 'اضطرابات الجهاز الدهليزي في الأمراض الأخرى',
             'H83': 'اضطرابات الأذن الداخلية الأخرى', 'H90': 'فقدان السمع التوصيلي', 'H91': 'فقدان السمع الآخر',
             'H92': 'ألم الأذن', 'H93': 'اضطرابات الأذن الأخرى', 'H94': 'اضطرابات الأذن في الأمراض الأخرى',
-            // أمراض القلب
             'I10': 'ارتفاع ضغط الدم الأساسي', 'I11': 'ارتفاع ضغط الدم القلبي', 'I12': 'ارتفاع ضغط الدم الكلوي',
             'I13': 'ارتفاع ضغط الدم القلبي الكلوي', 'I15': 'ارتفاع ضغط الدم الثانوي', 'I20': 'الذبحة الصدرية',
             'I21': 'احتشاء عضلة القلب الحاد', 'I22': 'احتشاء عضلة القلب المتكرر', 'I23': 'مضاعفات احتشاء عضلة القلب',
@@ -1462,7 +1775,6 @@
             'I84': 'البواسير', 'I85': 'دوالي المريء', 'I86': 'الدوالي في مواقع أخرى', 'I87': 'اضطرابات الأوردة الأخرى',
             'I88': 'التهاب العقد الليمفاوية غير النوعي', 'I89': 'اضطرابات الأوعية الليمفاوية الأخرى', 'I95': 'انخفاض ضغط الدم',
             'I97': 'اضطرابات الدورة الدموية بعد الإجراءات', 'I98': 'اضطرابات الدورة الدموية في الأمراض الأخرى',
-            // أمراض الجهاز التنفسي
             'J00': 'التهاب الأنف الحاد', 'J01': 'التهاب الجيوب الحاد', 'J02': 'التهاب البلعوم الحاد',
             'J03': 'التهاب اللوزتين الحاد', 'J04': 'التهاب الحنجرة الحاد', 'J05': 'التهاب الحنجرة والقصبة الهوائية الحاد',
             'J06': 'التهابات الجهاز التنفسي العلوي الحادة', 'J09': 'الإنفلونزا', 'J10': 'الإنفلونزا', 'J11': 'الإنفلونزا',
@@ -1480,7 +1792,6 @@
             'J86': 'الدبيلة', 'J90': 'الانصباب الجنبي', 'J91': 'الانصباب الجنبي في الأمراض الأخرى',
             'J92': 'لويحات جنبية', 'J93': 'استرواح الصدر', 'J94': 'اضطرابات الجنبة الأخرى', 'J95': 'اضطرابات الجهاز التنفسي بعد الإجراءات',
             'J96': 'فشل تنفسي', 'J98': 'اضطرابات الجهاز التنفسي الأخرى', 'J99': 'اضطرابات الجهاز التنفسي في الأمراض الأخرى',
-            // أمراض الجهاز الهضمي
             'K00': 'اضطرابات نمو الأسنان', 'K01': 'الأسنان المنطمرة', 'K02': 'تسوس الأسنان', 'K03': 'أمراض الأسنان الأخرى',
             'K04': 'أمراض اللب', 'K05': 'التهاب اللثة', 'K06': 'اضطرابات اللثة الأخرى', 'K07': 'اضطرابات الفك',
             'K08': 'اضطرابات الأسنان الأخرى', 'K09': 'كيسات الفم', 'K10': 'أمراض الفك الأخرى', 'K11': 'أمراض الغدد اللعابية',
@@ -1500,7 +1811,6 @@
             'K80': 'حصى المرارة', 'K81': 'التهاب المرارة', 'K82': 'أمراض المرارة الأخرى', 'K83': 'أمراض القناة الصفراوية الأخرى',
             'K85': 'التهاب البنكرياس الحاد', 'K86': 'أمراض البنكرياس الأخرى', 'K87': 'أمراض البنكرياس في الأمراض الأخرى',
             'K90': 'سوء الامتصاص المعوي', 'K91': 'اضطرابات الجهاز الهضمي بعد الإجراءات', 'K92': 'أمراض الجهاز الهضمي الأخرى',
-            // أمراض الجلد
             'L00': 'متلازمة ستافيلوكوكية', 'L01': 'القوباء', 'L02': 'الخراج الجلدي', 'L03': 'التهاب النسيج الخلوي',
             'L04': 'التهاب العقد الليمفاوية الحاد', 'L05': 'الكيس الشعري', 'L08': 'التهابات الجلد الأخرى',
             'L10': 'الفقاع', 'L11': 'أمراض الجلد الفقاعية الأخرى', 'L12': 'الفقاع الفقاعي',
@@ -1523,7 +1833,6 @@
             'L88': 'التهاب الجلد', 'L89': 'قرحة الفراش', 'L90': 'ضمور الجلد', 'L91': 'تضخم الجلد',
             'L92': 'أمراض الجلد الأخرى', 'L93': 'الذئبة', 'L94': 'أمراض النسيج الضام الموضعية الأخرى',
             'L95': 'التهاب الأوعية', 'L97': 'قرحة الأطراف السفلية', 'L98': 'أمراض الجلد الأخرى', 'L99': 'أمراض الجلد في الأمراض الأخرى',
-            // أمراض الجهاز العضلي الهيكلي
             'M00': 'التهاب المفاصل القيحي', 'M01': 'التهاب المفاصل في الأمراض الأخرى', 'M02': 'التهاب المفاصل التفاعلي',
             'M03': 'التهاب المفاصل في الأمراض الأخرى', 'M05': 'التهاب المفاصل الروماتويدي', 'M06': 'التهاب المفاصل الروماتويدي الآخر',
             'M07': 'التهاب المفاصل في الأمراض الجلدية', 'M08': 'التهاب المفاصل اليافع', 'M09': 'التهاب المفاصل في الأمراض الأخرى',
@@ -1553,7 +1862,6 @@
             'M93': 'تنخر العظم في مرحلة النمو الأخرى', 'M94': 'اضطرابات الغضاريف الأخرى',
             'M95': 'اضطرابات الجهاز العضلي الهيكلي الأخرى', 'M96': 'اضطرابات الجهاز العضلي الهيكلي بعد الإجراءات',
             'M99': 'اضطرابات الجهاز العضلي الهيكلي',
-            // أمراض الجهاز البولي
             'N00': 'التهاب الكلية الحاد', 'N01': 'التهاب الكلية السريع التقدم', 'N02': 'التهاب الكلية المتكرر',
             'N03': 'التهاب الكلية المزمن', 'N04': 'المتلازمة الكلوية', 'N05': 'التهاب الكلية غير محدد',
             'N06': 'التهاب الكلية', 'N07': 'التهاب الكلية', 'N08': 'التهاب الكلية في الأمراض الأخرى',
@@ -1584,7 +1892,6 @@
             'N91': 'انقطاع الطمث', 'N92': 'الطمث الغزير', 'N93': 'نزف الرحم الآخر', 'N94': 'آلام الحوض',
             'N95': 'اضطرابات سن اليأس', 'N96': 'الإجهاض المتكرر', 'N97': 'العقم عند النساء',
             'N98': 'مضاعفات التلقيح', 'N99': 'اضطرابات الجهاز البولي التناسلي بعد الإجراءات',
-            // أمراض الحمل والولادة
             'O00': 'الحمل المنتبذ', 'O01': 'الحمل العنقودي', 'O02': 'أشكال الحمل غير الطبيعية الأخرى',
             'O03': 'الإجهاض التلقائي', 'O04': 'الإجهاض الطبي', 'O05': 'الإجهاض', 'O06': 'الإجهاض',
             'O07': 'الإجهاض الفاشل', 'O08': 'مضاعفات الإجهاض', 'O10': 'ارتفاع ضغط الدم قبل الحمل',
@@ -1608,7 +1915,6 @@
             'O90': 'مضاعفات النفاس الأخرى', 'O91': 'التهابات الثدي النفاسية', 'O92': 'مشاكل الثدي النفاسية الأخرى',
             'O94': 'آثار الحمل', 'O95': 'الولادة', 'O96': 'الموت الأمومي', 'O97': 'الموت الأمومي',
             'O98': 'الأمراض المعدية في الحمل', 'O99': 'أمراض أخرى في الحمل',
-            // أمراض الأطفال حديثي الولادة
             'P00': 'الجنين والوليد المتأثران بالأم', 'P01': 'الجنين والوليد المتأثران بالحمل',
             'P02': 'الجنين والوليد المتأثران بالمشيمة', 'P03': 'الجنين والوليد المتأثران بالولادة',
             'P04': 'الجنين والوليد المتأثران بالمواد', 'P05': 'نقص نمو الجنين', 'P07': 'اضطرابات الولادة المبكرة',
@@ -1632,7 +1938,6 @@
             'P84': 'اضطرابات الوليد الأخرى', 'P90': 'تشنجات الوليد', 'P91': 'اضطرابات الدماغ الوليدية الأخرى',
             'P92': 'مشاكل التغذية الوليدية', 'P93': 'ردود الفعل للأدوية الوليدية', 'P94': 'اضطرابات النغمة الوليدية',
             'P95': 'موت الجنين', 'P96': 'اضطرابات الوليد الأخرى',
-            // التشوهات الخلقية
             'Q00': 'انعدام الدماغ', 'Q01': 'القيلة الدماغية', 'Q02': 'صغر الرأس', 'Q03': 'استسقاء الدماغ الخلقي',
             'Q04': 'تشوهات الدماغ الأخرى', 'Q05': 'السنسنة المشقوقة', 'Q06': 'تشوهات النخاع الشوكي الأخرى',
             'Q07': 'تشوهات الجهاز العصبي الأخرى', 'Q10': 'تشوهات الجفن', 'Q11': 'تشوهات العين',
@@ -1662,7 +1967,6 @@
             'Q91': 'متلازمة إدواردز', 'Q92': 'متلازمة باتو', 'Q93': 'حذف الكروموسومات', 'Q95': 'إعادة ترتيب الكروموسومات',
             'Q96': 'متلازمة تيرنر', 'Q97': 'تشوهات الكروموسومات الجنسية الأخرى', 'Q98': 'تشوهات الكروموسومات الجنسية الأخرى',
             'Q99': 'تشوهات الكروموسومات الأخرى',
-            // الأعراض والعلامات
             'R00': 'تشوهات ضربات القلب', 'R01': 'نفخات القلب', 'R02': 'الغرغرينا', 'R03': 'ضغط الدم غير طبيعي',
             'R04': 'نزيف الجهاز التنفسي', 'R05': 'السعال', 'R06': 'اضطرابات التنفس', 'R07': 'ألم الصدر',
             'R09': 'أعراض الجهاز التنفسي الأخرى', 'R10': 'ألم البطن', 'R11': 'الغثيان والقيء', 'R12': 'حرقة المعدة',
@@ -1690,7 +1994,6 @@
             'R90': 'نتائج تصوير الجهاز العصبي', 'R91': 'نتائج تصوير الصدر', 'R92': 'نتائج تصوير الثدي',
             'R93': 'نتائج تصوير الأعضاء الأخرى', 'R94': 'نتائج الفحوصات الوظيفية', 'R95': 'متلازمة موت الرضيع المفاجئ',
             'R96': 'الموت المفاجئ', 'R98': 'الموت', 'R99': 'أسباب أخرى',
-            // الإصابات
             'S00': 'إصابة الرأس السطحية', 'S01': 'جرح الرأس', 'S02': 'كسر الجمجمة', 'S03': 'خلع الرأس',
             'S04': 'إصابة الأعصاب القحفية', 'S05': 'إصابة العين', 'S06': 'إصابة داخل القحف', 'S07': 'سحق الرأس',
             'S08': 'بتر الرأس', 'S09': 'إصابات الرأس الأخرى', 'S10': 'إصابة الرقبة السطحية', 'S11': 'جرح الرقبة',
@@ -1747,7 +2050,6 @@
             'T88': 'مضاعفات أخرى', 'T90': 'آثار إصابات الرأس', 'T91': 'آثار إصابات الرقبة',
             'T92': 'آثار إصابات الطرف العلوي', 'T93': 'آثار إصابات الطرف السفلي', 'T94': 'آثار إصابات متعددة',
             'T95': 'آثار الحروق', 'T96': 'آثار التسمم', 'T97': 'آثار العوامل الخارجية', 'T98': 'آثار أخرى',
-            // أسباب خارجية وكوفيد
             'U07': 'كوفيد-19'
         };
 
@@ -1800,7 +2102,6 @@
         var isHighlighted = false;
         var hospitalFilter = '';
 
-        // دالة مساعدة لإرجاع البيانات المعروضة
         function getDisplayPatients() {
             if (hospitalFilter) {
                 return patients.filter(function (p) { return p.hospital === hospitalFilter; });
@@ -1873,6 +2174,10 @@
                     }
                     box.style.display = 'none';
                 };
+                div.ontouchend = function (e) {
+                    e.preventDefault();
+                    div.click();
+                };
                 box.appendChild(div);
             });
             box.style.display = 'block';
@@ -1886,73 +2191,10 @@
             }
         });
 
-        // ==================== دوال الفلترة ====================
-        function applyFilter() {
-            var month = document.getElementById('filterMonth').value;
-            var year = document.getElementById('filterYear').value.trim();
-            var gender = document.getElementById('filterGender').value;
-            var diagnosis = document.getElementById('filterDiagnosis').value;
-
-            var baseData = hospitalFilter ? patients.filter(function (p) { return p.hospital === hospitalFilter; }) : patients;
-
-            filteredPatients = baseData.filter(function (p) {
-                var match = true;
-                if (month) {
-                    if (!p.admission_date) return false;
-                    var m = p.admission_date.substring(5, 7);
-                    if (parseInt(m) !== parseInt(month)) match = false;
-                }
-                if (year) {
-                    if (!p.admission_date) return false;
-                    var y = p.admission_date.substring(0, 4);
-                    if (y !== year) match = false;
-                }
-                if (gender) {
-                    if (p.gender !== gender) match = false;
-                }
-                if (diagnosis) {
-                    if (p.diagnosis !== diagnosis) match = false;
-                }
-                return match;
-            });
-
-            isFiltered = true;
-            selectedId = null;
-            isHighlighted = false;
-            clearForm();
-            renderTable();
-            updateStats();
-            if (currentTab === 'causes') { renderCausesChart(); }
-            else if (currentTab === 'charts') { renderAllCharts(); }
-            alert('تم تطبيق التصفية. عدد النتائج: ' + filteredPatients.length);
-        }
-
-        function clearFilter() {
-            document.getElementById('filterMonth').value = '';
-            document.getElementById('filterYear').value = '';
-            document.getElementById('filterGender').value = '';
-            document.getElementById('filterDiagnosis').value = '';
-            filteredPatients = [];
-            isFiltered = false;
-            selectedId = null;
-            isHighlighted = false;
-            clearForm();
-            renderTable();
-            updateStats();
-            if (currentTab === 'causes') { renderCausesChart(); }
-            else if (currentTab === 'charts') { renderAllCharts(); }
-        }
-
         // ==================== دوال اختيار المستشفى ====================
         function applyHospitalFilter() {
             hospitalFilter = document.getElementById('hospitalSelector').value;
             document.getElementById('selectedHospitalName').textContent = hospitalFilter || 'لم يتم الاختيار';
-
-            // تعيين المستشفى في حقل النموذج (للتخزين)
-            if (hospitalFilter) {
-                document.getElementById('f_hospital').value = hospitalFilter;
-            }
-
             renderTable();
             updateStats();
             if (currentTab === 'causes') { renderCausesChart(); }
@@ -1963,7 +2205,6 @@
             document.getElementById('hospitalSelector').value = '';
             hospitalFilter = '';
             document.getElementById('selectedHospitalName').textContent = 'لم يتم الاختيار';
-            document.getElementById('f_hospital').value = '';
             renderTable();
             updateStats();
             if (currentTab === 'causes') { renderCausesChart(); }
@@ -1978,11 +2219,7 @@
             isHighlighted = false;
             selectedId = null;
             clearForm();
-            if (isFiltered) {
-                clearFilter();
-            } else {
-                renderTable();
-            }
+            renderTable();
             alert('✨ تم إلغاء التضليل ومسح التحديد.');
         }
 
@@ -2048,7 +2285,7 @@
                     '<span class="book book-4"></span>' +
                     '</span>';
             }
-            return '<span style="color:#ccc;font-size:12px;">-</span>';
+            return '<span style="color:#ccc;font-size:10px;">-</span>';
         }
 
         // ==================== عرض المرفق ====================
@@ -2057,12 +2294,12 @@
             if (!p || !p.attachment) { alert('لا يوجد مرفق'); return; }
             var win = window.open('', '_blank');
             if (!win) { alert('الرجاء السماح للنوافذ المنبثقة'); return; }
-            var html = '<html dir="rtl"><head><meta charset="UTF-8"><title>المرفق</title><style>body{font-family:Arial;text-align:center;padding:20px;}</style></head><body>';
+            var html = '<html dir="rtl"><head><meta charset="UTF-8"><title>المرفق</title><style>body{font-family:Arial;text-align:center;padding:20px;margin:0;} img,embed{max-width:100%;max-height:80vh;}</style></head><body>';
             html += '<h2>المرفق - ' + p.patient_name + '</h2>';
             var mime = p.attachment.split(',')[0].split(':')[1].split(';')[0];
-            if (mime === 'application/pdf') html += '<embed src="' + p.attachment + '" width="100%" height="500">';
+            if (mime === 'application/pdf') html += '<embed src="' + p.attachment + '" width="100%" height="500" type="application/pdf">';
             else html += '<img src="' + p.attachment + '" style="max-width:100%;max-height:80vh;">';
-            html += '<br><button onclick="window.print()">🖨️ طباعة</button></body></html>';
+            html += '<br><button onclick="window.print()" style="padding:8px 20px;margin-top:10px;font-size:16px;">🖨️ طباعة</button></body></html>';
             win.document.write(html);
             win.document.close();
         }
@@ -2070,7 +2307,6 @@
         // ==================== الإحصائيات ====================
         function updateStats() {
             var data = getDisplayPatients();
-            // تحديث الإحصائيات في الواجهة (إذا كانت موجودة)
             var statsDiv = document.getElementById('statsDisplay');
             if (statsDiv) {
                 var total = data.length;
@@ -2114,7 +2350,7 @@
                 province: getElement('f_province').value,
                 district: getElement('f_district').value,
                 neighborhood: getElement('f_neighborhood').value.trim(),
-                hospital: getElement('f_hospital').value || hospitalFilter,
+                hospital: document.getElementById('hospitalSelector').value || hospitalFilter,
                 doctor_name: getElement('f_doctor_name').value.trim(),
                 status: getElement('f_status').value,
                 department: getElement('f_department').value,
@@ -2147,7 +2383,8 @@
             updateDistricts();
             getElement('f_district').value = p.district || '';
             getElement('f_neighborhood').value = p.neighborhood || '';
-            getElement('f_hospital').value = p.hospital || '';
+            document.getElementById('hospitalSelector').value = p.hospital || hospitalFilter || '';
+            document.getElementById('selectedHospitalName').textContent = p.hospital || hospitalFilter || 'لم يتم الاختيار';
             getElement('f_doctor_name').value = p.doctor_name || '';
             getElement('f_status').value = p.status || '';
             getElement('f_department').value = p.department || '';
@@ -2164,8 +2401,8 @@
             getElement('f_education').value = ''; getElement('f_chronic_disease').value = 'لايوجد';
             getElement('f_smoker').value = ''; getElement('f_diagnosis').value = '';
             getElement('f_diagnosis_arabic').value = ''; getElement('f_province').value = '';
-            getElement('f_district').value = ''; getElement('f_hospital').value = hospitalFilter || '';
-            getElement('f_status').value = ''; getElement('f_department').value = '';
+            getElement('f_district').value = ''; getElement('f_status').value = '';
+            getElement('f_department').value = '';
             getElement('f_admission_date').value = today();
             getElement('f_discharge_date').value = '';
             selectedId = null; attachFileObj = null; isHighlighted = false;
@@ -2184,12 +2421,6 @@
             var provSel = getElement('f_province');
             provSel.innerHTML = '<option value="">--</option>';
             Object.keys(DISTRICTS_FULL).sort().forEach(function (p) { provSel.appendChild(new Option(p, p)); });
-            var filterDiag = getElement('filterDiagnosis');
-            filterDiag.innerHTML = '<option value="">الكل</option>';
-            var sortedCodes = Object.keys(ICD_CODES).sort();
-            sortedCodes.forEach(function (code) {
-                filterDiag.appendChild(new Option(code + ' - ' + ICD_CODES[code], code));
-            });
         }
 
         function getAgeString(p) {
@@ -2377,7 +2608,7 @@
             var win = window.open('', '_blank');
             if (!win) { alert('الرجاء السماح للنوافذ المنبثقة'); return; }
             var html = '<html dir="rtl"><head><meta charset="UTF-8"><title>تقرير طبي</title>';
-            html += '<style>body{font-family:Arial;margin:25px;} .hdr{background:#0d47a1;color:#fff;padding:12px;text-align:center;border-radius:8px;margin-bottom:18px;} .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:15px 0;} .sec{border:1px solid #ddd;padding:12px;border-radius:8px;margin-bottom:12px;} .sec h4{margin:0 0 8px;color:#0d47a1;} .lbl{font-weight:bold;color:#333;}</style></head><body>';
+            html += '<style>body{font-family:Arial;margin:20px;} .hdr{background:#0d47a1;color:#fff;padding:10px;text-align:center;border-radius:8px;margin-bottom:14px;} .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 15px;margin:10px 0;} .sec{border:1px solid #ddd;padding:10px;border-radius:8px;margin-bottom:10px;} .sec h4{margin:0 0 6px;color:#0d47a1;} .lbl{font-weight:bold;color:#333;} @media print{.no-print{display:none;}}</style></head><body>';
             html += '<div class="hdr"><h2>' + p.hospital + '</h2><h3>التقرير الطبي للمريض</h3></div>';
             html += '<div class="sec"><h4>معلومات المريض</h4><div class="grid">';
             html += '<div><span class="lbl">رقم السجل:</span> ' + p.medical_record + '</div>';
@@ -2401,7 +2632,7 @@
             html += '<div><span class="lbl">الردهة:</span> ' + p.department + '</div>';
             html += '<div><span class="lbl">المستشفى:</span> ' + p.hospital + '</div>';
             html += '<div><span class="lbl">الطبيب:</span> ' + p.doctor_name + '</div></div></div>';
-            html += '<div style="margin-top:20px;border-top:1px solid #ddd;padding-top:12px;display:flex;justify-content:space-between;">';
+            html += '<div style="margin-top:16px;border-top:1px solid #ddd;padding-top:10px;display:flex;justify-content:space-between;">';
             html += '<div>تاريخ الطباعة: ' + new Date().toLocaleDateString('ar-EG') + '</div>';
             html += '<div>توقيع الطبيب: ' + p.doctor_name + '</div></div></body></html>';
             win.document.write(html);
@@ -2506,7 +2737,7 @@
             var monthName = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'][month - 1];
 
             var archive = {
-                hospital: hospitalFilter || document.getElementById('f_hospital').value || 'مستشفى غير محدد',
+                hospital: document.getElementById('hospitalSelector').value || 'مستشفى غير محدد',
                 date: new Date().toISOString(),
                 month: monthName,
                 year: year,
@@ -2553,7 +2784,7 @@
                 return;
             }
 
-            var hospitalName = hospitalFilter || document.getElementById('f_hospital').value || 'مستشفى غير محدد';
+            var hospitalName = document.getElementById('hospitalSelector').value || 'مستشفى غير محدد';
             var now = new Date();
             var month = String(now.getMonth() + 1).padStart(2, '0');
             var year = now.getFullYear();
@@ -2616,9 +2847,9 @@
             var counts = {};
             data.forEach(function (p) { var k = p.diagnosis_arabic || 'غير محدد'; counts[k] = (counts[k] || 0) + 1; });
             var sorted = Object.entries(counts).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10);
-            var html = '<div style="display:flex; justify-content:space-between;"><h4>أكثر 10 أسباب مرضية</h4><button class="prt" onclick="printCauses()">🖨️ طباعة</button></div>';
-            html += '<div style="display:flex; gap:15px; margin-top:10px; flex-wrap:wrap;"><div style="flex:2; min-width:300px;"><canvas id="causesChart" style="max-height:260px;width:100%;"></canvas></div>';
-            html += '<div style="flex:1; background:#fff; border-radius:10px; padding:10px; border:1px solid #ddd; max-height:300px; overflow-y:auto; min-width:200px;"><table style="width:100%; font-size:13px;"><tr><th>#</th><th>التشخيص</th><th>عدد</th></tr>';
+            var html = '<div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;"><h4 style="font-size:clamp(14px,1.1vw,18px);">أكثر 10 أسباب مرضية</h4><button class="btn btn-s" onclick="printCauses()" style="padding:3px 10px;font-size:clamp(10px,0.8vw,13px);">🖨️ طباعة</button></div>';
+            html += '<div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap;"><div style="flex:2; min-width:250px;"><canvas id="causesChart" style="max-height:220px;width:100%;"></canvas></div>';
+            html += '<div style="flex:1; background:#fff; border-radius:10px; padding:8px; border:1px solid #ddd; max-height:250px; overflow-y:auto; min-width:160px;"><table style="width:100%; font-size:clamp(11px,0.8vw,13px);"><tr><th>#</th><th>التشخيص</th><th>عدد</th></tr>';
             sorted.forEach(function (item, idx) { html += '<tr><td>' + (idx + 1) + '</td><td>' + item[0] + '</td><td>' + item[1] + '</td></tr>'; });
             if (!sorted.length) html += '<tr><td colspan="3">لا توجد بيانات</td></tr>';
             html += '</table></div></div>';
@@ -2627,7 +2858,7 @@
         function renderReportTab() {
             var p = patients.find(function (x) { return x.medical_record === selectedId; });
             if (!p) return '<div class="alert-box">⚠️ الرجاء اختيار مريض من الجدول</div>';
-            var html = '<div class="rbox"><h3>' + p.patient_name + '</h3><hr><div class="row">';
+            var html = '<div class="rbox"><h3>' + p.patient_name + '</h3><hr style="margin:6px 0;"><div class="row">';
             var fields = [
                 ['رقم السجل', p.medical_record], ['اسم الأم', p.mother_name], ['رقم البطاقة', p.national_id], ['الجنس', p.gender],
                 ['الجنسية', p.nationality], ['العمر', getAgeString(p)], ['المهنة', p.profession], ['التحصيل', p.education],
@@ -2775,12 +3006,12 @@
             var datasets = [{
                 label: 'عدد الحالات',
                 data: sorted.map(function (i) { return i[1]; }),
-                backgroundColor: colors3d.slice(0, sorted.length).map(function (c) { var g = ctx.createLinearGradient(0, 0, 0, 400); g.addColorStop(0, c[0]); g.addColorStop(1, c[1]); return g; }),
-                borderColor: '#fff', borderWidth: 2, borderRadius: { topLeft: 8, topRight: 8 }, borderSkipped: false, barPercentage: 0.7
+                backgroundColor: colors3d.slice(0, sorted.length).map(function (c) { var g = ctx.createLinearGradient(0, 0, 0, 300); g.addColorStop(0, c[0]); g.addColorStop(1, c[1]); return g; }),
+                borderColor: '#fff', borderWidth: 2, borderRadius: { topLeft: 6, topRight: 6 }, borderSkipped: false, barPercentage: 0.7
             }];
             chartInstances.causes = new Chart(ctx, {
                 type: 'bar', data: { labels: sorted.map(function (i) { return i[0]; }), datasets: datasets },
-                options: { responsive: true, plugins: { legend: { display: false }, title: { display: true, text: 'أكثر 10 أسباب مرضية' } }, scales: { y: { beginAtZero: true } } }
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, title: { display: true, text: 'أكثر 10 أسباب مرضية' } }, scales: { y: { beginAtZero: true } } }
             });
         }
 
@@ -2814,8 +3045,8 @@
                     }),
                     backgroundColor: brightColors[i % brightColors.length],
                     borderColor: '#fff',
-                    borderWidth: 2,
-                    borderRadius: 8,
+                    borderWidth: 1.5,
+                    borderRadius: 4,
                     borderSkipped: false
                 };
             });
@@ -2830,8 +3061,9 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: true,
                         plugins: {
-                            legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                            legend: { position: 'bottom', labels: { font: { size: 9 } } },
                             title: { display: true, text: 'توزيع الأمراض حسب المستشفى' }
                         },
                         scales: {
@@ -2873,7 +3105,7 @@
                 chartInstances.nationalityGenderDisease = new Chart(canvas2.getContext('2d'), {
                     type: 'doughnut',
                     data: { labels: natGenderKeys, datasets: datasets2 },
-                    options: { responsive: true, cutout: '50%' }
+                    options: { responsive: true, maintainAspectRatio: true, cutout: '50%' }
                 });
             }
 
@@ -2901,7 +3133,7 @@
                     }),
                     borderColor: brightColors[(i + 5) % brightColors.length],
                     tension: 0.3,
-                    pointRadius: 5,
+                    pointRadius: 4,
                     fill: false
                 };
             });
@@ -2911,7 +3143,7 @@
                 chartInstances.provinceGenderDisease = new Chart(canvas3.getContext('2d'), {
                     type: 'line',
                     data: { labels: provKeys, datasets: datasets3 },
-                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                    options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true } } }
                 });
             }
 
@@ -2926,7 +3158,7 @@
                 if (chartInstances.genderBar) chartInstances.genderBar.destroy();
                 var ctx4 = canvas4.getContext('2d');
                 var grads = Object.keys(genderCounts).map(function (_, i) {
-                    var g = ctx4.createLinearGradient(0, 0, 0, 400);
+                    var g = ctx4.createLinearGradient(0, 0, 0, 300);
                     if (i === 0) {
                         g.addColorStop(0, '#0d6efd');
                         g.addColorStop(1, '#084298');
@@ -2948,11 +3180,12 @@
                             backgroundColor: grads,
                             borderColor: '#fff',
                             borderWidth: 2,
-                            borderRadius: { topLeft: 8, topRight: 8 }
+                            borderRadius: { topLeft: 6, topRight: 6 }
                         }]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: true,
                         plugins: { legend: { display: false } },
                         scales: { y: { beginAtZero: true } }
                     }
@@ -2978,7 +3211,7 @@
                     else ageCounts[8]++;
                 });
                 var ctx5 = canvas5.getContext('2d');
-                var grad5 = ctx5.createLinearGradient(0, 0, 0, 400);
+                var grad5 = ctx5.createLinearGradient(0, 0, 0, 300);
                 grad5.addColorStop(0, '#0d6efd');
                 grad5.addColorStop(1, '#6ea8fe');
                 chartInstances.ageDistribution = new Chart(ctx5, {
@@ -2996,6 +3229,7 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: true,
                         plugins: { title: { display: true, text: 'توزيع الأعمار (فئات عشرية)' } },
                         scales: { y: { beginAtZero: true } }
                     }
@@ -3013,6 +3247,9 @@
             document.getElementById('f_province').addEventListener('change', updateDistricts);
             updateStats();
             document.getElementById('selectedHospitalName').textContent = 'لم يتم الاختيار';
+
+            // إضافة مستمعين للأحداث على الشاشات الصغيرة
+            document.addEventListener('touchstart', function () { }, { passive: true });
         }
         window.onload = init;
     </script>
